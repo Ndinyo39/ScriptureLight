@@ -6,6 +6,22 @@ const path = require('path');
 
 const app = express();
 
+// === CORS CONFIGURATION ===
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// === HEALTH CHECK (BEFORE DB) ===
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', time: new Date().toISOString() });
+});
+
 let isConnected = false;
 const connectOnce = async () => {
     if (!isConnected) {
@@ -14,33 +30,21 @@ const connectOnce = async () => {
     }
 };
 
-// Middleware to ensure DB is connected
+// Middleware to ensure DB is connected (except for health check)
 app.use(async (req, res, next) => {
+    if (req.path === '/api/health') return next();
     try {
         await connectOnce();
         next();
     } catch (err) {
         console.error('Failed to connect to database:', err.message);
-        res.status(500).json({ error: 'Database connection failed', details: err.message });
+        res.status(500).json({ 
+            error: 'Database connection failed', 
+            details: err.message,
+            hint: 'Ensure DATABASE_URL is set correctly in Vercel settings.'
+        });
     }
 });
-
-// === FIXED CORS CONFIGURATION ===
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        
-        // Allow all origins for development
-        return callback(null, true);
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
-
-// Handle preflight requests
-app.options('*', cors());
 
 // Middleware
 app.use(express.json());
