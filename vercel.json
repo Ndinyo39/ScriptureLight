@@ -23,11 +23,19 @@
       "dest": "backend/server.js"
     },
     {
+      "src": "/assets/(.*)",
+      "dest": "frontend-react/dist/assets/$1"
+    },
+    {
+      "src": "/Logo.png",
+      "dest": "frontend-react/dist/Logo.png"
+    },
+    {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "frontend-react/index.html"
+      "dest": "frontend-react/dist/index.html"
     }
   ]
 }
