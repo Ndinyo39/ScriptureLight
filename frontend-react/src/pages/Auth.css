@@ -1,0 +1,272 @@
+/* ── AUTH PAGE ───────────────────────────── */
+.auth-page {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #0f1b2d 0%, #1a3052 50%, #0f2340 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-page::before {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(74,111,165,0.2), transparent 70%);
+    top: -100px;
+    right: -100px;
+    border-radius: 50%;
+}
+
+.auth-page::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(42,157,143,0.15), transparent 70%);
+    bottom: -80px;
+    left: -80px;
+    border-radius: 50%;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.97);
+    padding: 3.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* ── AUTH HEADER ──────────────────────────── */
+.auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.auth-icon {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: var(--white);
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 8px 24px rgba(74,111,165,0.4);
+}
+
+.auth-header h2 {
+    margin: 0 0 0.5rem;
+    color: var(--dark);
+    font-size: 1.75rem;
+}
+
+.auth-header p {
+    color: var(--gray);
+    font-size: 0.95rem;
+}
+
+/* ── AUTH FORM ──────────────────────────── */
+.auth-form .form-group {
+    margin-bottom: 1.4rem;
+}
+
+.auth-form label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.85rem 1.1rem;
+    border: 1.5px solid var(--gray-lighter);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: var(--light);
+    color: var(--dark);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--white);
+    box-shadow: 0 0 0 4px var(--primary-transparent);
+}
+
+.form-control::placeholder {
+    color: var(--gray-light);
+}
+
+/* ── PASSWORD TOGGLE ──────────────────────── */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper .form-control {
+    padding-right: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.85rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: color 0.2s ease, background 0.2s ease;
+    line-height: 1;
+}
+
+.password-toggle:hover {
+    color: var(--primary);
+    background: var(--primary-transparent);
+}
+
+.password-toggle:focus {
+    outline: none;
+    color: var(--primary);
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: inherit;
+    box-shadow: 0 6px 20px rgba(74,111,165,0.35);
+    letter-spacing: 0.02em;
+}
+
+.btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(74,111,165,0.45);
+}
+
+.btn-submit:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+/* ── AUTH FEEDBACK ────────────────────────── */
+.auth-error {
+    background: var(--danger-light);
+    color: var(--danger);
+    padding: 0.85rem 1.1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    border-left: 4px solid var(--danger);
+}
+
+.auth-success {
+    background: var(--success-light);
+    color: var(--success);
+    padding: 0.85rem 1.1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    border-left: 4px solid var(--success);
+}
+
+/* ── AUTH FOOTER ──────────────────────────── */
+.auth-footer {
+    margin-top: 2rem;
+    text-align: center;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.auth-footer a {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 2.5rem 1.75rem;
+    }
+}
+
+/* ── FORGOT PASSWORD SUCCESS ──────────────── */
+.forgot-success {
+    text-align: center;
+    padding: 0.5rem 0;
+}
+
+.forgot-success-icon {
+    color: var(--success, #2a9d8f);
+    margin: 0 auto 1rem;
+    display: block;
+}
+
+.forgot-success h3 {
+    font-size: 1.3rem;
+    color: var(--dark);
+    margin: 0 0 0.75rem;
+}
+
+.forgot-success p {
+    color: var(--gray);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin: 0 0 0.5rem;
+}
+
+/* ── FORGOT PASSWORD LINK ─────────────────── */
+.forgot-link {
+    display: block;
+    text-align: right;
+    font-size: 0.82rem;
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 0.3rem;
+    margin-bottom: 0.2rem;
+    transition: opacity 0.2s;
+}
+
+.forgot-link:hover {
+    opacity: 0.75;
+    text-decoration: underline;
+}
+

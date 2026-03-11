@@ -1,0 +1,234 @@
+/* Testimonies.css */
+
+.testimonies-page {
+  padding-top: 2rem;
+  padding-bottom: 5rem;
+}
+
+.testimony-hero {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 24px;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--white);
+  margin-bottom: 3rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.testimony-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.testimony-hero h2 {
+  font-size: 2.25rem;
+  margin-bottom: 1rem;
+  color: var(--white);
+}
+
+.testimony-hero p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+}
+
+.share-btn-large {
+  background: var(--white);
+  color: var(--primary);
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.share-btn-large:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+/* Testimony Card Styling */
+.testimony-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 2.5rem;
+  border: 1px solid var(--gray-lighter);
+  margin-bottom: 2.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.testimony-card:hover {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-md);
+}
+
+.testimony-badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.testimony-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 1rem;
+}
+
+.testimony-content {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--dark);
+  margin-bottom: 2rem;
+  position: relative;
+  font-style: italic;
+}
+
+.testimony-content::before {
+  content: '“';
+  position: absolute;
+  left: -1.5rem;
+  top: -1rem;
+  font-size: 4rem;
+  color: var(--primary-light);
+  opacity: 0.5;
+  font-family: serif;
+}
+
+.amen-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-lighter);
+}
+
+.amen-btn-big {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--gray-lighter);
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+  color: var(--gray);
+}
+
+.amen-btn-big:hover {
+  background: #fff5f5;
+  border-color: #ffcdd2;
+  color: #d32f2f;
+}
+
+.amen-btn-big.active {
+  background: #ffebee;
+  border-color: #ef9a9a;
+  color: #c62828;
+}
+
+.amen-btn-big.active svg {
+  fill: #c62828;
+}
+
+/* Modal Styling for Testimonies */
+.testimony-modal-body {
+  padding: 2.5rem;
+}
+
+.testimony-modal-body label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+
+.testimony-modal-body input, 
+.testimony-modal-body select, 
+.testimony-modal-body textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--gray-lighter);
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.testimony-modal-body input:focus, 
+.testimony-modal-body textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* Comments Section */
+.comments-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--gray-lighter);
+}
+
+.comment-input-box {
+  display: flex;
+  gap: 10px;
+  margin-top: 1.5rem;
+}
+
+.comment-input-box input {
+  flex: 1;
+  padding: 0.6rem 1.25rem;
+  border-radius: 20px;
+  border: 1px solid var(--gray-lighter);
+  font-size: 0.9rem;
+  background: var(--gray-lightest);
+  transition: all 0.2s;
+}
+
+.comment-input-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 4px var(--primary-transparent);
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.comment-item {
+  background: var(--gray-lightest);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: background 0.2s;
+}
+
+.comment-item:hover {
+  background: #f0f4f8;
+}

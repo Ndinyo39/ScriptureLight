@@ -1,0 +1,384 @@
+.bible-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    min-height: 70vh;
+}
+
+@media (max-width: 768px) {
+    .bible-layout {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .bible-sidebar {
+        display: none; 
+    }
+    .reader-main {
+        padding: 1.5rem !important;
+    }
+    .reader-nav {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    .reader-nav h2 {
+        font-size: 1.5rem !important;
+    }
+}
+
+.bible-sidebar {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.sidebar-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--light);
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-search input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.testament-toggle {
+    display: flex;
+    gap: 5px;
+    background: var(--light);
+    padding: 5px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+}
+
+.testament-toggle button {
+    flex: 1;
+    border: none;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.testament-toggle button.active {
+    background: var(--primary);
+    color: white;
+}
+
+.book-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.book-btn {
+    text-align: left;
+    padding: 0.8rem 1rem;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.book-btn:hover {
+    background: var(--primary-transparent);
+    color: var(--primary);
+}
+
+.book-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.reader-main {
+    background: white;
+    border-radius: var(--radius);
+    padding: 3rem;
+    box-shadow: var(--shadow);
+}
+
+.reader-header {
+    border-bottom: 2px solid var(--gray-lighter);
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+}
+
+.reader-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.reader-nav h2 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-controls select {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-lighter);
+}
+
+.icon-btn {
+    background: var(--light);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.icon-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.reader-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+    .reader-toolbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .nav-controls {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.toolbar-btns button:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.reader-settings, .font-scaler {
+    display: flex;
+    background: var(--gray-lightest);
+    padding: 3px;
+    border-radius: 40px;
+    gap: 2px;
+}
+
+.setting-btn, .font-scaler button {
+    border: none;
+    background: transparent;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--gray);
+    transition: all 0.2s;
+}
+
+.setting-btn.active, .setting-btn:hover, .font-scaler button:hover {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.setting-btn.sepia.active { color: #5f4b32; }
+.setting-btn.dark.active { color: #1a1a2e; }
+
+/* Themes */
+.chapter-content {
+    transition: background 0.3s, color 0.3s;
+    padding: 2rem;
+    border-radius: var(--radius);
+    margin: 1rem 0;
+}
+
+.theme-light { background: transparent; color: var(--dark); }
+.theme-sepia { background: #f4ecd8; color: #5f4b32; }
+.theme-dark { background: #1a1a2e; color: #d1d1e0; }
+
+.theme-dark .verse-num { color: var(--accent); }
+.theme-sepia .verse-num { color: #8e735b; }
+
+.verse {
+    line-height: 2;
+    margin-bottom: 1.5rem;
+}
+
+.verse-num {
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 0.8em;
+    margin-right: 12px;
+    font-family: sans-serif;
+}
+
+.reader-progress-bar {
+    height: 4px;
+    background: var(--gray-lighter);
+    width: 100%;
+    position: relative;
+    top: -2.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+}
+
+.verse {
+    font-size: 1.2rem;
+    line-height: 2;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.verse-num {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.9rem;
+    margin-right: 10px;
+}
+
+.empty-chapter-hint {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--gray-light);
+}
+
+.reader-footer-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--gray-lighter);
+}
+
+.mr-2 {
+    margin-right: 0.5rem;
+}
+
+.btn-primary.disabled {
+    background: var(--gray-light);
+    border-color: var(--gray-light);
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.btn-primary.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Loading / Error / Empty States */
+.loading-state,
+.error-state,
+.empty-chapter-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+    color: var(--gray-light);
+    text-align: center;
+    gap: 1rem;
+}
+
+.error-state {
+    color: var(--danger);
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Bible page layout */
+.bible-reader-page {
+    padding-top: 2rem;
+    padding-bottom: 5rem;
+}
+
+/* ── VERSE INTERACTION ── */
+.verse-container {
+    position: relative;
+    padding: 4px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.verse-container:hover {
+    background: rgba(74, 111, 165, 0.06);
+}
+
+.verse-container.highlighted {
+    background: rgba(74, 111, 165, 0.12);
+    border-left: 3px solid var(--primary);
+    padding-left: 12px;
+}
+
+.verse-bookmark-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--gray);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: 0.2s;
+}
+
+.verse-bookmark-btn.bookmarked {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.verse-bookmark-btn:hover {
+    background: var(--primary);
+    color: white;
+}

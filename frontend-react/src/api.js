@@ -1,0 +1,41 @@
+const API_URL = import.meta.env.MODE === 'production' 
+  ? '/api' 
+  : 'http://localhost:5000/api';
+
+const apiRequest = async (endpoint, options = {}) => {
+  const token = localStorage.getItem('token');
+  
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` }),
+    ...options.headers,
+  };
+
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Something went wrong' }));
+    throw new Error(error.message || 'API request failed');
+  }
+
+  return response.json();
+};
+
+export const api = {
+  get: (endpoint) => apiRequest(endpoint, { method: 'GET' }),
+  post: (endpoint, body) => apiRequest(endpoint, { method: 'POST', body: JSON.stringify(body) }),
+  put: (endpoint, body) => apiRequest(endpoint, { method: 'PUT', body: JSON.stringify(body) }),
+  patch: (endpoint, body) => apiRequest(endpoint, { method: 'PATCH', body: JSON.stringify(body) }),
+  delete: (endpoint) => apiRequest(endpoint, { method: 'DELETE' }),
+};
+
+export const fetchBibleVerses = async (book, chapter, translation = 'kjv') => {
+  // Using labs.bible.org or similar open API
+  // For now, using a more reliable one: bible-api.com
+  const response = await fetch(`https://bible-api.com/${book}+${chapter}?translation=${translation}`);
+  if (!response.ok) throw new Error('Bible API failed');
+  return response.json();
+};

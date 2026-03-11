@@ -1,0 +1,30 @@
+{
+  "name": "ScriptureLight",
+  "short_name": "ScriptureLight",
+  "description": "A faith-based platform for Bible study and spiritual growth.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4a6fa5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "lifestyle",
+    "education",
+    "books"
+  ],
+  "screenshots": [
+    {
+      "src": "/Logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
