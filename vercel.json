@@ -13,18 +13,29 @@
       }
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "backend/server.js"
+      "src": "/api/(.*)",
+      "dest": "backend/server.js"
     },
     {
-      "source": "/uploads/(.*)",
-      "destination": "backend/server.js"
+      "src": "/uploads/(.*)",
+      "dest": "backend/server.js"
     },
     {
-      "source": "/(.*)",
-      "destination": "frontend-react/$1"
+      "src": "/assets/(.*)",
+      "dest": "frontend-react/assets/$1"
+    },
+    {
+      "src": "/(Logo.png|manifest.json|sw.js|favicon.ico)",
+      "dest": "frontend-react/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend-react/index.html"
     }
   ]
 }
