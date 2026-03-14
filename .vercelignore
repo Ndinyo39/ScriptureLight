@@ -2,6 +2,5 @@ node_modules
 .git
 backend/database.sqlite
 frontend-react/node_modules
-frontend-react/dist
 backend/uploads/*
 !backend/uploads/.gitkeep
