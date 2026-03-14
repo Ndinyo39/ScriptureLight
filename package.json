@@ -2,12 +2,7 @@
   "name": "scripturelight",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "frontend-react",
-    "backend"
-  ],
   "scripts": {
-    "dev": "npm run dev --workspaces",
-    "build": "npm run build --workspace=frontend-react"
+    "build": "npm run build --prefix frontend-react"
   }
 }
