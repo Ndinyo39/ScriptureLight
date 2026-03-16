@@ -5,9 +5,9 @@ let sequelize;
 
 let dbUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.trim() : null;
 
-// Aggressively strip trailing backslashes or quotes that might have been copy-pasted
+// Aggressively strip ALL backslashes, quotes, or whitespace that might have been accidentally included
 if (dbUrl) {
-    dbUrl = dbUrl.replace(/[\\'"]+$/, '').trim();
+    dbUrl = dbUrl.replace(/[\\"']+/g, '').trim();
 }
 
 if (dbUrl) {
