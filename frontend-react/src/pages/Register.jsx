@@ -14,8 +14,21 @@ const Register = () => {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [stats, setStats] = useState({ users: 0 });
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await api.get('/stats');
+        setStats(data);
+      } catch (err) {
+        console.error('Failed to fetch stats:', err);
+      }
+    };
+    fetchStats();
+  }, []);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -55,7 +68,7 @@ const Register = () => {
             <UserPlus size={40} />
           </div>
           <h2>Join ScriptureLight</h2>
-          <p>Start your faith journey with us</p>
+          <p>Start your faith journey with us alongside {stats.users.toLocaleString()}+ other believers</p>
         </div>
 
         {error && <div className="auth-error">{error}</div>}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -15,11 +15,25 @@ import Support from './pages/Support';
 import Admin from './pages/Admin';
 import PWAInstallBanner from './components/PWAInstallBanner';
 import Profile from './pages/Profile';
+import { api } from './api';
 import UserProfile from './pages/UserProfile';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
+  const [stats, setStats] = useState({ users: 0 });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await api.get('/stats');
+        setStats(data);
+      } catch (err) {
+        console.error('Failed to fetch footer stats:', err);
+      }
+    };
+    fetchStats();
+  }, []);
   return (
     <Router>
       <div className="app">
@@ -139,7 +153,10 @@ function App() {
               </div>
             </div>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem', textAlign: 'center', fontSize: '0.8rem' }}>
-              <p>© 2026 ScriptureLight. All rights reserved. 🙏</p>
+              <p style={{ marginBottom: '0.5rem', color: 'rgba(255,255,255,0.8)', fontWeight: '500' }}>
+                Join {stats.users.toLocaleString()}+ believers growing in faith with ScriptureLight 🙏
+              </p>
+              <p>© 2026 ScriptureLight. All rights reserved.</p>
             </div>
           </div>
         </footer>
