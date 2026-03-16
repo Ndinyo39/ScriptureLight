@@ -5,18 +5,22 @@ const app = express();
 
 // === 1. HEALTH CHECK (ABSOLUTE TOP) ===
 app.get('/api/health', (req, res) => {
-    const dbUrl = process.env.DATABASE_URL || '';
-    const scheme = dbUrl.split(':')[0] || 'none';
+    const rawUrl = process.env.DATABASE_URL || '';
+    const scheme = rawUrl.split(':')[0] || 'none';
     
     // Safely get char codes for markers to see invisible chars
     const getSafeDebug = (str) => {
-        const start = str.substring(0, 5);
-        const end = str.substring(str.length - 5);
+        if (!str) return null;
+        // Show first 40 and last 40 chars to find the port/path section safely
+        const start = str.substring(0, 40);
+        const end = str.substring(Math.max(0, str.length - 40));
         return {
-            start,
-            end,
+            urlLength: str.length,
             startCodes: start.split('').map(c => c.charCodeAt(0)),
-            endCodes: end.split('').map(c => c.charCodeAt(0))
+            endCodes: end.split('').map(c => c.charCodeAt(0)),
+            // Explicitly check for backslash anywhere
+            hasBackslash: str.includes('\\'),
+            backslashIndices: str.split('').map((c, i) => c === '\\' ? i : -1).filter(i => i !== -1)
         };
     };
 
@@ -24,11 +28,10 @@ app.get('/api/health', (req, res) => {
         status: 'ok', 
         time: new Date().toISOString(),
         debug: {
-            urlLength: dbUrl.length,
             urlScheme: scheme,
             nodeVersion: process.version,
             env: process.env.NODE_ENV,
-            inspect: getSafeDebug(dbUrl),
+            inspect: getSafeDebug(rawUrl),
             keys: Object.keys(process.env).filter(k => 
                 k.startsWith('PG') || 
                 k.includes('DATABASE') || 
