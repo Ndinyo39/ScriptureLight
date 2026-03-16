@@ -11,12 +11,20 @@ if (dbUrl) {
 }
 
 if (dbUrl) {
-    console.log('Database URL detected, initializing Sequelize...');
+    console.log('Database URL detected, initializing Sequelize components...');
     try {
-        const parsedUrl = new URL(dbUrl);
-        const options = {
-            host: parsedUrl.hostname,
-            port: parsedUrl.port || 5432,
+        const u = new URL(dbUrl);
+        const dbName = u.pathname.substring(1);
+        const dbUser = u.username;
+        const dbPass = decodeURIComponent(u.password);
+        const dbHost = u.hostname;
+        const dbPort = parseInt(u.port || '5432', 10);
+
+        console.log(`DB Debug: Host=${dbHost}, Port=${dbPort}, Name=${dbName}`);
+
+        sequelize = new Sequelize(dbName, dbUser, dbPass, {
+            host: dbHost,
+            port: dbPort,
             dialect: 'postgres',
             dialectOptions: {
                 ssl: {
@@ -24,20 +32,16 @@ if (dbUrl) {
                     rejectUnauthorized: false
                 }
             },
-            logging: false
-        };
-
-        // Initialize with components: database, username, password, options
-        sequelize = new Sequelize(
-            parsedUrl.pathname.substring(1), // remove leading /
-            parsedUrl.username,
-            decodeURIComponent(parsedUrl.password),
-            options
-        );
-        
-        console.log(`Sequelize initialized for host: ${options.host}:${options.port}`);
+            logging: false,
+            pool: {
+                max: 5,
+                min: 0,
+                acquire: 30000,
+                idle: 10000
+            }
+        });
     } catch (err) {
-        console.error('CRITICAL: Database URL is invalid or Sequelize initialization failed:', err.message);
+        console.error('CRITICAL: Database initialization failed:', err.message);
     }
 } else if (process.env.NODE_ENV !== 'production') {
     console.log('Using SQLite for development...');

@@ -5,41 +5,27 @@ const app = express();
 
 // === 1. HEALTH CHECK (ABSOLUTE TOP) ===
 app.get('/api/health', (req, res) => {
-    const rawUrl = process.env.DATABASE_URL || '';
-    const scheme = rawUrl.split(':')[0] || 'none';
-    
-    // Safely get char codes for markers to see invisible chars
-    const getSafeDebug = (str) => {
-        if (!str) return null;
-        // Show first 40 and last 40 chars to find the port/path section safely
-        const start = str.substring(0, 40);
-        const end = str.substring(Math.max(0, str.length - 40));
-        return {
-            urlLength: str.length,
-            startCodes: start.split('').map(c => c.charCodeAt(0)),
-            endCodes: end.split('').map(c => c.charCodeAt(0)),
-            // Explicitly check for backslash anywhere
-            hasBackslash: str.includes('\\'),
-            backslashIndices: str.split('').map((c, i) => c === '\\' ? i : -1).filter(i => i !== -1)
-        };
-    };
-
     res.json({ 
         status: 'ok', 
         time: new Date().toISOString(),
-        debug: {
-            urlScheme: scheme,
-            nodeVersion: process.version,
-            env: process.env.NODE_ENV,
-            inspect: getSafeDebug(rawUrl),
-            keys: Object.keys(process.env).filter(k => 
-                k.startsWith('PG') || 
-                k.includes('DATABASE') || 
-                k.includes('DB_') || 
-                k.includes('PORT')
-            )
-        }
+        node: process.version
     });
+});
+
+// === 1.5 DB TEST ENDPOINT ===
+app.get('/api/db-test', async (req, res) => {
+    try {
+        const { sequelize } = require('./config/database');
+        await sequelize.authenticate();
+        res.json({ status: 'connected', dialect: sequelize.getDialect() });
+    } catch (err) {
+        console.error('DB Test Failed:', err.message);
+        res.status(500).json({ 
+            status: 'failed', 
+            error: err.message,
+            stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+        });
+    }
 });
 
 // === 2. CORS & MIDDLEWARE ===
@@ -53,7 +39,6 @@ app.use(express.json());
 let isConnected = false;
 const connectOnce = async () => {
     if (!isConnected) {
-        // Only require DB config when needed
         const { connectDB } = require('./config/database');
         await connectDB();
         isConnected = true;
@@ -61,8 +46,8 @@ const connectOnce = async () => {
 };
 
 app.use(async (req, res, next) => {
-    // Skip DB check for health
-    if (req.path === '/api/health' || req.path === '/api/test') return next();
+    // Skip DB check for health/test
+    if (req.path === '/api/health' || req.path === '/api/db-test' || req.path === '/api/test') return next();
     
     try {
         await connectOnce();
