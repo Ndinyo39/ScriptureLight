@@ -96,6 +96,7 @@ const Home = () => {
   }, []);
 
   const stats = [
+    { value: (realStats?.users || 0).toLocaleString(), label: "Registered Users" },
     { value: (realStats?.users || 0).toLocaleString(), label: "Scripture Readers" },
     { value: (realStats?.groups || 0) > 0 ? `${realStats.groups}+` : "0", label: "Fellowship Groups" },
     { value: (realStats?.testimonies || 0).toLocaleString(), label: "Testimonies Shared" },
