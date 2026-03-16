@@ -11,49 +11,13 @@ for (const key in process.env) {
     }
 }
 
-// === 1. HEALTH CHECK (ABSOLUTE TOP) ===
+// === 1. HEALTH CHECK (Professional) ===
 app.get('/api/health', (req, res) => {
     res.json({ 
-        status: 'ok', 
+        status: 'online', 
         time: new Date().toISOString(),
-        node: process.version,
-        env: process.env.NODE_ENV
+        version: '1.1.0'
     });
-});
-
-// === 1.5 DB TEST ENDPOINT ===
-app.get('/api/db-test', async (req, res) => {
-    try {
-        const { sequelize, getInitError } = require('./config/database');
-        const initErr = getInitError();
-        
-        if (initErr) {
-            return res.status(500).json({ status: 'error', message: 'Sequelize initialization failed', details: initErr });
-        }
-        
-        if (!sequelize) {
-            return res.status(500).json({ status: 'error', message: 'Sequelize not initialized' });
-        }
-        
-        await sequelize.authenticate();
-        res.json({ 
-            status: 'connected', 
-            dialect: sequelize.getDialect(),
-            database: sequelize.getDatabaseName()
-        });
-    } catch (err) {
-        console.error('DB Test Failed:', err);
-        res.status(500).json({ 
-            status: 'failed', 
-            error: err.message,
-            code: err.code,
-            original: err.original ? {
-                message: err.original.message,
-                code: err.original.code,
-                stack: err.original.stack
-            } : null
-        });
-    }
 });
 
 // === 2. CORS & MIDDLEWARE ===
@@ -74,8 +38,8 @@ const connectOnce = async () => {
 };
 
 app.use(async (req, res, next) => {
-    // Skip DB check for health/test
-    if (req.path === '/api/health' || req.path === '/api/db-test' || req.path === '/api/test') return next();
+    // Skip DB check for health/external tests
+    if (req.path === '/api/health' || req.path === '/api/test') return next();
     
     try {
         await connectOnce();
