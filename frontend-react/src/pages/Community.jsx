@@ -119,7 +119,7 @@ const Community = () => {
       setSelectedGroup(createdGroup); // Automatically open the new group
     } catch (err) {
       console.error('Failed to create group:', err);
-      alert('Must be logged in to create a group!');
+      alert(err.message || 'Failed to create group. Please try again.');
     }
   };
 
@@ -152,7 +152,7 @@ const Community = () => {
       alert('Joined group successfully!');
     } catch (err) {
       console.error('Failed to join group:', err);
-      alert('Failed to join group. Are you logged in?');
+      alert(err.message || 'Failed to join group. Please try again.');
     }
   };
 
@@ -183,7 +183,7 @@ const Community = () => {
       setNewPostScripture('');
     } catch (err) {
       console.error('Failed to create group post:', err);
-      alert('Must be a member to post in this group!');
+      alert(err.message || 'Failed to create group post. Please try again.');
     }
   };
 
@@ -202,7 +202,7 @@ const Community = () => {
       setNewPostScripture('');
     } catch (err) {
       console.error('Failed to create post:', err);
-      alert('Please login to share a post!');
+      alert(err.message || 'Please login or check your connection to share a post.');
     }
   };
 
@@ -214,7 +214,7 @@ const Community = () => {
       ));
     } catch (err) {
       console.error('Failed to pray for post:', err);
-      alert('Please login to pray for someone!');
+      alert(err.message || 'Please login to pray for someone.');
     }
   };
 
@@ -248,7 +248,7 @@ const Community = () => {
       setPosts(posts.map(p => p.id === postId ? { ...p, commentCount: (p.commentCount || 0) + 1 } : p));
     } catch (err) {
       console.error('Failed to post comment:', err);
-      alert('Please login to comment!');
+      alert(err.message || 'Please login to comment.');
     }
   };
 
