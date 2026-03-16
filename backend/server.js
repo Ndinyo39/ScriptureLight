@@ -24,10 +24,17 @@ app.get('/api/health', (req, res) => {
 // === 1.5 DB TEST ENDPOINT ===
 app.get('/api/db-test', async (req, res) => {
     try {
-        const { sequelize } = require('./config/database');
+        const { sequelize, getInitError } = require('./config/database');
+        const initErr = getInitError();
+        
+        if (initErr) {
+            return res.status(500).json({ status: 'error', message: 'Sequelize initialization failed', details: initErr });
+        }
+        
         if (!sequelize) {
             return res.status(500).json({ status: 'error', message: 'Sequelize not initialized' });
         }
+        
         await sequelize.authenticate();
         res.json({ 
             status: 'connected', 
