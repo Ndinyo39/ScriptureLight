@@ -14,7 +14,13 @@ app.get('/api/health', (req, res) => {
             urlLength: dbUrl.length,
             urlScheme: scheme,
             nodeVersion: process.version,
-            env: process.env.NODE_ENV
+            env: process.env.NODE_ENV,
+            keys: Object.keys(process.env).filter(k => 
+                k.startsWith('PG') || 
+                k.includes('DATABASE') || 
+                k.includes('DB_') || 
+                k.includes('PORT')
+            )
         }
     });
 });
