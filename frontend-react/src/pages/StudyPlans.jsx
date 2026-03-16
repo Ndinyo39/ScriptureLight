@@ -110,7 +110,7 @@ const StudyPlans = () => {
       alert('Plan joined successfully! Check your dashboard for progress.');
     } catch (err) {
       console.error('Failed to join plan:', err);
-      alert('Must be logged in to join a study plan!');
+      alert(err.message || 'Failed to join study plan. Please try again.');
     }
   };
 
