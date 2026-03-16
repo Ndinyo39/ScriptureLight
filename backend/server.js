@@ -7,6 +7,19 @@ const app = express();
 app.get('/api/health', (req, res) => {
     const dbUrl = process.env.DATABASE_URL || '';
     const scheme = dbUrl.split(':')[0] || 'none';
+    
+    // Safely get char codes for markers to see invisible chars
+    const getSafeDebug = (str) => {
+        const start = str.substring(0, 5);
+        const end = str.substring(str.length - 5);
+        return {
+            start,
+            end,
+            startCodes: start.split('').map(c => c.charCodeAt(0)),
+            endCodes: end.split('').map(c => c.charCodeAt(0))
+        };
+    };
+
     res.json({ 
         status: 'ok', 
         time: new Date().toISOString(),
@@ -15,6 +28,7 @@ app.get('/api/health', (req, res) => {
             urlScheme: scheme,
             nodeVersion: process.version,
             env: process.env.NODE_ENV,
+            inspect: getSafeDebug(dbUrl),
             keys: Object.keys(process.env).filter(k => 
                 k.startsWith('PG') || 
                 k.includes('DATABASE') || 
