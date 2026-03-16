@@ -361,6 +361,32 @@ a {
         width: 100%;
         justify-content: center;
     }
+
+    .modal-content {
+        width: calc(100% - 1rem);
+        border-radius: var(--radius);
+        padding: 0;
+    }
+
+    .modal-hero {
+        padding: 1.75rem 1.25rem;
+        border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .modal-details {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .modal-footer .btn-primary,
+    .modal-footer .btn-outline {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* ── UTILITIES ─────────────────────────────── */

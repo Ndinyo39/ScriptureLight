@@ -564,4 +564,74 @@
   }
 }
 
+@media (max-width: 480px) {
+  .community-page {
+    padding-bottom: 3rem;
+  }
+
+  .community-page h1 {
+    font-size: 1.5rem;
+  }
+
+  .groups-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .community-tabs {
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 0.75rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .community-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .post-form-card, .post-card {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  .comment-input-box {
+    flex-direction: column;
+  }
+
+  .comment-input-box input {
+    border-radius: 10px;
+  }
+
+  .comment-input-box .btn-primary {
+    width: 100%;
+    justify-content: center;
+    border-radius: 10px;
+  }
+
+  .post-footer-actions {
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .group-card {
+    padding: 1.25rem;
+  }
+
+  .author-details .name {
+    font-size: 0.9rem;
+  }
+
+  .post-content {
+    font-size: 0.95rem;
+  }
+}
+
 

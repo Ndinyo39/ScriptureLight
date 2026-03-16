@@ -152,3 +152,37 @@
 @media (max-width: 768px) {
     .admin-stats-grid { grid-template-columns: 1fr 1fr; }
 }
+
+@media (max-width: 480px) {
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-header {
+        padding: 1.5rem 0;
+    }
+
+    .admin-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .admin-tab {
+        padding: 0.75rem 0.75rem;
+        font-size: 0.82rem;
+        gap: 6px;
+    }
+
+    .admin-board {
+        padding: 1.25rem 1rem;
+    }
+
+    .admin-stat-card {
+        padding: 1.25rem;
+        gap: 1rem;
+    }
+
+    .admin-stat-info p {
+        font-size: 1.25rem;
+    }
+}
+

@@ -224,3 +224,54 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+@media (max-width: 480px) {
+    .support-hero {
+        padding: 5rem 0 4rem;
+    }
+
+    .support-subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .donation-card {
+        padding: 1.25rem 1rem;
+        margin-top: -1.5rem;
+        width: 100%;
+        border-radius: var(--radius);
+    }
+
+    .donation-type-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .type-btn {
+        flex: 1;
+        padding: 0.6rem 1rem;
+        text-align: center;
+    }
+
+    .amount-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .amount-btn {
+        padding: 1rem 0.5rem;
+        font-size: 1.25rem;
+    }
+
+    .security-badges {
+        gap: 1.25rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .impact-section {
+        padding: 4rem 0;
+    }
+}
+

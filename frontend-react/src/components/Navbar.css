@@ -199,5 +199,9 @@
     color: var(--dark);
     font-weight: 600;
     font-size: 0.95rem;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 

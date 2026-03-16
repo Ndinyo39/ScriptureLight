@@ -231,4 +231,65 @@
 
 .comment-item:hover {
   background: #f0f4f8;
+}@media (max-width: 480px) {
+  .testimony-hero {
+    padding: 2.5rem 1.25rem;
+    border-radius: 16px;
+  }
+
+  .testimony-hero h2 {
+    font-size: 1.6rem;
+  }
+
+  .testimony-hero p {
+    font-size: 0.95rem;
+  }
+
+  .share-btn-large {
+    padding: 0.85rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .testimony-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .testimony-content::before {
+    left: 0;
+    font-size: 3rem;
+    top: -0.75rem;
+  }
+
+  .testimony-content {
+    padding-left: 0.5rem;
+  }
+
+  .testimony-title {
+    font-size: 1.2rem;
+  }
+
+  .amen-section {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .amen-btn-big {
+    flex: 1;
+    justify-content: center;
+    min-width: 130px;
+  }
+
+  .comment-input-box {
+    flex-direction: column;
+  }
+
+  .comment-input-box input {
+    border-radius: 10px;
+  }
+
+  .comment-input-box .btn-primary {
+    width: 100%;
+    justify-content: center;
+    border-radius: 10px;
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Check,
@@ -13,7 +13,9 @@ import {
   Bookmark,
   Loader2,
   RefreshCw,
-  AlignLeft
+  AlignLeft,
+  Menu,
+  X
 } from 'lucide-react';
 import { api } from '../api';
 import './BibleReader.css';
@@ -82,7 +84,15 @@ const BibleReader = () => {
   const [fontSize, setFontSize] = useState(1.15);
   const [theme, setTheme] = useState('light');
   const [chapterReference, setChapterReference] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRef = useRef(null);
+
+  // Close sidebar on escape key
+  useEffect(() => {
+    const handleKey = (e) => { if (e.key === 'Escape') setSidebarOpen(false); };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, []);
 
   useEffect(() => {
     loadVerses();
@@ -184,52 +194,83 @@ const BibleReader = () => {
     }
   };
 
+  const sidebarContent = (
+    <>
+      <div className="sidebar-search">
+        <Search size={16} color="var(--gray)" />
+        <input
+          type="text"
+          placeholder="Search books..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      <div className="testament-toggle">
+        <button className={testament === 'old' ? 'active' : ''} onClick={() => setTestament('old')}>
+          Old
+        </button>
+        <button className={testament === 'new' ? 'active' : ''} onClick={() => setTestament('new')}>
+          New
+        </button>
+      </div>
+
+      <div className="book-list">
+        {books
+          .filter(b => b.toLowerCase().includes(searchQuery.toLowerCase()))
+          .map(book => (
+            <button
+              key={book}
+              className={`book-btn ${currentBook === book ? 'active' : ''}`}
+              onClick={() => {
+                setCurrentBook(book);
+                setCurrentChapter(1);
+                setSidebarOpen(false);
+              }}
+            >
+              {readStatus[`${book}-1`] ? '✓ ' : ''}{book}
+            </button>
+          ))
+        }
+      </div>
+    </>
+  );
+
   return (
     <div className="bible-reader-page section container">
+      {/* Mobile sidebar overlay */}
+      <div
+        className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
+
       <div className="bible-layout">
 
-        {/* ── SIDEBAR ── */}
-        <aside className="bible-sidebar">
-          <div className="sidebar-search">
-            <Search size={16} color="var(--gray)" />
-            <input
-              type="text"
-              placeholder="Search books..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          <div className="testament-toggle">
-            <button className={testament === 'old' ? 'active' : ''} onClick={() => setTestament('old')}>
-              Old
-            </button>
-            <button className={testament === 'new' ? 'active' : ''} onClick={() => setTestament('new')}>
-              New
-            </button>
-          </div>
-
-          <div className="book-list">
-            {books
-              .filter(b => b.toLowerCase().includes(searchQuery.toLowerCase()))
-              .map(book => (
-                <button
-                  key={book}
-                  className={`book-btn ${currentBook === book ? 'active' : ''}`}
-                  onClick={() => {
-                    setCurrentBook(book);
-                    setCurrentChapter(1);
-                  }}
-                >
-                  {readStatus[`${book}-1`] ? '✓ ' : ''}{book}
-                </button>
-              ))
-            }
-          </div>
+        {/* ── SIDEBAR (desktop always visible, mobile as drawer) ── */}
+        <aside className={`bible-sidebar ${sidebarOpen ? 'mobile-open' : ''}`}>
+          {/* Mobile close button inside sidebar */}
+          <button
+            className="sidebar-toggle-btn"
+            style={{ marginBottom: '1rem', background: 'transparent', color: 'var(--gray)', border: '1px solid var(--gray-lighter)' }}
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close book list"
+          >
+            <X size={16} /> Close
+          </button>
+          {sidebarContent}
         </aside>
 
         {/* ── READER MAIN ── */}
         <main className="reader-main">
+          {/* Mobile sidebar toggle button */}
+          <button
+            className="sidebar-toggle-btn"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open book list"
+          >
+            <Menu size={16} /> {currentBook} {currentChapter}
+          </button>
 
           {/* Reader Header */}
           <div className="reader-header">
@@ -259,13 +300,13 @@ const BibleReader = () => {
 
             {/* Toolbar */}
             <div className="reader-toolbar">
-              <div className="d-flex align-items-center gap-3 flex-wrap">
+              <div className="d-flex align-items-center gap-3 flex-wrap" style={{ minWidth: 0, maxWidth: '100%' }}>
                 {/* Translation Select */}
                 <select
                   value={translation}
                   onChange={(e) => setTranslation(e.target.value)}
                   disabled={loading}
-                  style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}
+                  style={{ fontSize: '0.85rem', padding: '0.5rem 0.75rem', maxWidth: '100%', minWidth: 0, flex: '1 1 auto' }}
                 >
                   {TRANSLATIONS.map(t => (
                     <option key={t.label} value={t.value}>{t.label}</option>
