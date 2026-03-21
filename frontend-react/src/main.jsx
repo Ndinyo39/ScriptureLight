@@ -12,11 +12,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>,
 );
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    for (let registration of registrations) {
-      registration.unregister();
-      console.log('Stale SW unregistered during cleanup');
-    }
-  });
-}
+// Service worker registration will be handled by the production build or sw.js directly if needed.
