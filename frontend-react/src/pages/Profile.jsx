@@ -35,6 +35,12 @@ const Profile = () => {
     const handleFileSelect = (e) => {
         const file = e.target.files[0];
         if (file) {
+            // Check file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                setError('Image file is too large. Please select a file smaller than 5MB.');
+                return;
+            }
+            setError('');
             setSelectedFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -68,7 +74,22 @@ const Profile = () => {
                 body: data
             });
 
-            const result = await response.json();
+            let result = {};
+            try {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    const text = await response.text();
+                    if (response.status === 413 || text.includes('Request Entity Too Large')) {
+                        throw new Error('The image file is too large for the server. Please try a smaller image.');
+                    }
+                    throw new Error('Server returned an unexpected response format.');
+                }
+            } catch (pErr) {
+                if (response.status === 413) throw new Error('Image too large (Server limit).');
+                throw pErr;
+            }
             
             if (!response.ok) {
                 throw new Error(result.message || 'Failed to update profile');
