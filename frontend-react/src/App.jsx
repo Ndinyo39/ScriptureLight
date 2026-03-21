@@ -20,6 +20,7 @@ import UserProfile from './pages/UserProfile';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
+import OnlineNotifier from './components/OnlineNotifier';
 
 function App() {
   const [stats, setStats] = useState({ users: 0 });
