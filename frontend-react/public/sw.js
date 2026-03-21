@@ -1,7 +1,7 @@
 // ── ScriptureLight Service Worker ──────────────────────────────────────
 // Bump CACHE_VERSION whenever you deploy new CSS/JS to push
 // updates to installed PWA users on their next visit.
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `scripturelight-${CACHE_VERSION}`;
 
 // Static shell assets to always pre-cache
