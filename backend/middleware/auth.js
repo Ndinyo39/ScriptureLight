@@ -24,6 +24,15 @@ const auth = async (req, res, next) => {
 
         req.user = decoded.user;
         req.user.role = user.role; // Attach role to req.user for admin middleware
+        
+        // Update lastActiveAt if it's been more than 5 minutes
+        const now = new Date();
+        const inactiveTime = user.lastActiveAt ? now - new Date(user.lastActiveAt) : Infinity;
+        if (inactiveTime > 5 * 60 * 1000) {
+            user.lastActiveAt = now;
+            await user.save({ hooks: false }).catch(err => console.error('Failed to update lastActiveAt', err));
+        }
+
         next();
     } catch (error) {
         console.error('Auth middleware error:', error);

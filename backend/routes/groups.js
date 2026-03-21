@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
         res.json(groups);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', details: error.message });
     }
 });
 

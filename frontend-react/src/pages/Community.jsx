@@ -111,6 +111,7 @@ const Community = () => {
   const [postComments, setPostComments] = useState({});
   const [commentInputs, setCommentInputs] = useState({});
   const [localReactions, setLocalReactions] = useState({}); // {postId: {amen:bool, fire:bool, peace:bool}}
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   const [activeTab, setActiveTab] = useState(() => {
     const saved = localStorage.getItem('communityTab');
@@ -135,7 +136,20 @@ const Community = () => {
     else if (activeTab === 'groups' && !selectedGroup) loadGroups();
   }, [activeTab, selectedGroup]);
 
-  useEffect(() => { loadPosts(); }, []);
+  useEffect(() => { 
+    loadPosts(); 
+    loadOnlineUsers(); 
+    // refresh online users every 60 seconds
+    const interval = setInterval(loadOnlineUsers, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadOnlineUsers = async () => {
+    try {
+      const data = await api.get('/users/online');
+      setOnlineUsers(data);
+    } catch (e) { console.error('Failed to load online users:', e); }
+  };
 
   const loadPosts = async () => {
     setLoading(true);
@@ -386,6 +400,34 @@ const Community = () => {
           <strong>{posts.filter(p => p.type === 'prayer').length}</strong> prayer requests
         </div>
       </motion.div>
+
+      {/* Online Users Row */}
+      {onlineUsers.length > 0 && (
+        <motion.div 
+          className="online-users-container"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="online-users-header">
+            <span className="live-dot" /> 
+            <span className="online-text">Online Believers ({onlineUsers.length})</span>
+          </div>
+          <div className="online-users-scroll">
+            {onlineUsers.map(u => (
+               <Link to={`/profile/${u.id}`} key={u.id} className="online-user-avatar-wrap" title={u.name}>
+                 <div className="online-user-avatar" style={{ background: getRandomColor(u.name) }}>
+                   {u.profilePicture 
+                     ? <img src={getImageUrl(u.profilePicture)} alt={u.name} /> 
+                     : u.name.charAt(0)}
+                   <span className="online-user-indicator" />
+                 </div>
+                 <span className="online-user-name">{u.name.split(' ')[0]}</span>
+               </Link>
+            ))}
+          </div>
+        </motion.div>
+      )}
 
       {/* Primary Tabs */}
       <div className="community-tabs">

@@ -3,6 +3,29 @@ const router = express.Router();
 const { User, CommunityPost, Testimony } = require('../models');
 const auth = require('../middleware/auth');
 const { sequelize } = require('../config/database');
+const { Op } = require('sequelize');
+
+// Get online users (active in the last 15 minutes)
+router.get('/online', auth, async (req, res) => {
+    try {
+        const fifteenMinsAgo = new Date(Date.now() - 15 * 60 * 1000);
+        const onlineUsers = await User.findAll({
+            where: {
+                lastActiveAt: {
+                    [Op.gte]: fifteenMinsAgo
+                },
+                status: 'active'
+            },
+            attributes: ['id', 'name', 'profilePicture', 'lastActiveAt'],
+            order: [['lastActiveAt', 'DESC']],
+            limit: 30
+        });
+        res.json(onlineUsers);
+    } catch (error) {
+        console.error('Failed to fetch online users:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 // Get public profile of any user
 router.get('/:id', auth, async (req, res) => {

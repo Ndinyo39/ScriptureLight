@@ -19,6 +19,7 @@ import { api } from './api';
 import UserProfile from './pages/UserProfile';
 
 import ProtectedRoute from './components/ProtectedRoute';
+import OnlineNotifier from './components/OnlineNotifier';
 
 function App() {
   const [stats, setStats] = useState({ users: 0 });
@@ -39,6 +40,7 @@ function App() {
       <div className="app">
         <PWAInstallBanner />
         <Navbar />
+        <OnlineNotifier />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route 

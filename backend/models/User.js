@@ -35,6 +35,10 @@ const User = sequelize.define('User', {
     lastLogin: {
         type: DataTypes.DATE
     },
+    lastActiveAt: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
     activePlanId: {
         type: DataTypes.UUID,
         allowNull: true
