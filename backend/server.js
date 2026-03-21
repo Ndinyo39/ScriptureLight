@@ -90,6 +90,18 @@ app.get('/api/test', (req, res) => {
     });
 });
 
+// === MANUAL DB FIX ROUTE ===
+app.get('/api/db-fix-temp', async (req, res) => {
+    try {
+        const { sequelize } = require('./config/database');
+        await sequelize.sync({ alter: true });
+        res.json({ message: '✅ Database schema forcefully updated! The missing columns should now exist. You can log in.' });
+    } catch (err) {
+        console.error('Manual DB sync failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // === CATCH-ALL ROUTE ===
 app.all('*', (req, res) => {
     res.status(404).json({
