@@ -27,18 +27,21 @@ const Dashboard = () => {
     const [bibleStats, setBibleStats] = useState({ totalChapters: 0, totalMinutes: 0 });
     const [latestBooks, setLatestBooks] = useState([]);
     const [dailyVerse, setDailyVerse] = useState({ text: "For I know the plans I have for you...", ref: "Jeremiah 29:11" });
+    const [highlights, setHighlights] = useState([]);
   
     useEffect(() => {
         const fetchDashboardData = async () => {
           try {
-            const [userRes, statsRes, booksRes] = await Promise.all([
+            const [userRes, statsRes, booksRes, highlightsRes] = await Promise.all([
               api.get('/auth/me'),
               api.get('/bible/stats'),
-              api.get('/books')
+              api.get('/books'),
+              api.get('/bible/highlights')
             ]);
             setUserData(userRes);
             setBibleStats(statsRes);
             setLatestBooks(booksRes.slice(0, 3));
+            setHighlights(highlightsRes.slice(0, 5)); // Show last 5 highlights
             
             // Try to fetch a real daily verse
             fetch('https://bible-api.com/jeremiah+29:11')
@@ -213,6 +216,34 @@ const Dashboard = () => {
             <div className="v-actions">
               <Link to="/bible" className="btn-outline btn-sm"><BookOpen size={14} /> Read More</Link>
               <button className="btn-primary btn-sm"><Share2 size={16} /> Share</button>
+            </div>
+          </div>
+
+          {/* My Highlights */}
+          <div className="card highlights-card mt-4">
+            <div className="card-header d-flex justify-content-between">
+              <h3><Bookmark size={20} color="var(--primary)" /> My Highlights</h3>
+              <Link to="/bible" className="text-primary" style={{ fontSize: '0.8rem' }}>View All</Link>
+            </div>
+            <div className="mini-highlight-list mt-3">
+              {highlights.length > 0 ? highlights.map(h => (
+                <div key={h.id} className="highlight-item mb-3 p-3" style={{ 
+                  borderLeft: `4px solid ${h.color || 'var(--primary)'}`,
+                  background: 'rgba(0,0,0,0.02)',
+                  borderRadius: '0 8px 8px 0'
+                }}>
+                  <div className="highlight-ref mb-1" style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--gray)' }}>
+                    {h.book} {h.chapter}:{h.verseNumber}
+                  </div>
+                  <div className="highlight-text" style={{ fontSize: '0.85rem', fontStyle: 'italic', color: 'var(--dark)' }}>
+                    "{h.content.length > 80 ? h.content.substring(0, 80) + '...' : h.content}"
+                  </div>
+                </div>
+              )) : (
+                <p className="text-muted text-center py-3" style={{ fontSize: '0.85rem' }}>
+                  Your favorite verses will appear here when you highlight them in the Bible Reader. 🙏
+                </p>
+              )}
             </div>
           </div>
 

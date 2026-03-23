@@ -119,25 +119,6 @@ const BibleReader = () => {
   const [chapterReference, setChapterReference] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRef = useRef(null);
-
-  // Handle Load Verses & Save LocalStorage
-  useEffect(() => {
-    localStorage.setItem('lastReadBook', currentBook);
-    localStorage.setItem('lastReadChapter', currentChapter.toString());
-    localStorage.setItem('lastReadTranslation', translation);
-    loadVerses();
-  }, [currentBook, currentChapter, translation]);
-
-  // Save color highlights
-  useEffect(() => {
-    localStorage.setItem('bibleHighlights', JSON.stringify(coloredHighlights));
-  }, [coloredHighlights]);
-
-  // Save font family
-  useEffect(() => {
-    localStorage.setItem('bibleFontFamily', fontFamily);
-  }, [fontFamily]);
-
   const showToast = (msg) => setToast(msg);
 
   const copyVerse = (v) => {
@@ -145,19 +126,6 @@ const BibleReader = () => {
     navigator.clipboard.writeText(text);
     showToast('Verse copied to clipboard!');
     setHighlightedVerse(null);
-  };
-
-  const toggleColorHighlight = (verseNum, color) => {
-    const key = `${currentBook}-${currentChapter}-${verseNum}`;
-    setColoredHighlights(prev => {
-      const next = { ...prev };
-      if (next[key] === color) {
-        delete next[key];
-      } else {
-        next[key] = color;
-      }
-      return next;
-    });
   };
 
   const loadVerses = async (forceTranslation = null) => {
@@ -172,7 +140,6 @@ const BibleReader = () => {
       const response = await fetch(url);
       
       if (!response.ok) {
-        // Fallback for incomplete translations (like OEB)
         if (activeTranslation !== 'web') {
            console.log(`Translation ${activeTranslation} failed, falling back to WEB`);
            return loadVerses('web');
@@ -196,6 +163,54 @@ const BibleReader = () => {
     }
   };
 
+  const toggleColorHighlight = async (verseNum, color) => {
+    const key = `${currentBook}-${currentChapter}-${verseNum}`;
+    const verseText = verses.find(v => v.verse === verseNum)?.text || '';
+    
+    let isRemoving = false;
+    setColoredHighlights(prev => {
+      const next = { ...prev };
+      if (next[key] === color) {
+        delete next[key];
+        isRemoving = true;
+      } else {
+        next[key] = color;
+        isRemoving = false;
+      }
+      return next;
+    });
+
+    try {
+      await api.post('/bible/highlights', {
+        book: currentBook,
+        chapter: currentChapter,
+        verseNumber: verseNum,
+        content: verseText,
+        color: isRemoving ? null : color
+      });
+    } catch (err) {
+      console.error('Failed to sync highlight to server:', err);
+    }
+  };
+
+  const syncHighlights = async () => {
+    try {
+      const highlights = await api.get('/bible/highlights');
+      if (highlights && Array.isArray(highlights)) {
+        setColoredHighlights(prev => {
+          const synced = { ...prev };
+          highlights.forEach(h => {
+             const key = `${h.book}-${h.chapter}-${h.verseNumber}`;
+             synced[key] = h.color;
+          });
+          return synced;
+        });
+      }
+    } catch (err) {
+      console.error('Failed to sync highlights:', err);
+    }
+  };
+
   const handleMarkAsRead = async () => {
     const chapterKey = `${currentBook}-${currentChapter}`;
     if (readStatus[chapterKey]) return;
@@ -207,7 +222,6 @@ const BibleReader = () => {
       });
       setReadStatus(prev => ({ ...prev, [chapterKey]: true }));
     } catch (err) {
-      // Still mark locally even if API fails
       setReadStatus(prev => ({ ...prev, [chapterKey]: true }));
     }
   };
@@ -218,6 +232,31 @@ const BibleReader = () => {
       prev.includes(key) ? prev.filter(b => b !== key) : [...prev, key]
     );
   };
+
+  // ── Effects ──
+
+  // Handle Load Verses & Save LocalStorage
+  useEffect(() => {
+    localStorage.setItem('lastReadBook', currentBook);
+    localStorage.setItem('lastReadChapter', currentChapter.toString());
+    localStorage.setItem('lastReadTranslation', translation);
+    loadVerses();
+  }, [currentBook, currentChapter, translation]);
+
+  // Save color highlights locally
+  useEffect(() => {
+    localStorage.setItem('bibleHighlights', JSON.stringify(coloredHighlights));
+  }, [coloredHighlights]);
+
+  // Sync highlights from backend on mount
+  useEffect(() => {
+    syncHighlights();
+  }, []);
+
+  // Save font family
+  useEffect(() => {
+    localStorage.setItem('bibleFontFamily', fontFamily);
+  }, [fontFamily]);
 
   const isBookmarked = (verseNum) => bookmarkedVerses.includes(`${currentBook}-${currentChapter}-${verseNum}`);
   const isRead = readStatus[`${currentBook}-${currentChapter}`];

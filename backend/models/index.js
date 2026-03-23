@@ -8,6 +8,7 @@ const BibleGroup = require('./BibleGroup');
 const GroupMember = require('./GroupMember');
 const Book = require('./Book');
 const Transaction = require('./Transaction');
+const Highlight = require('./Highlight');
 
 // User <-> Transaction
 User.hasMany(Transaction, { foreignKey: 'userId', as: 'transactions' });
@@ -55,6 +56,10 @@ Comment.belongsTo(Testimony, { foreignKey: 'testimonyId', as: 'testimony' });
 User.hasMany(Book, { foreignKey: 'uploaderId', as: 'uploadedBooks' });
 Book.belongsTo(User, { foreignKey: 'uploaderId', as: 'uploader' });
 
+// User <-> Highlight
+User.hasMany(Highlight, { foreignKey: 'userId', as: 'highlights' });
+Highlight.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 module.exports = {
     User,
     CommunityPost,
@@ -65,5 +70,6 @@ module.exports = {
     BibleGroup,
     GroupMember,
     Book,
-    Transaction
+    Transaction,
+    Highlight
 };
