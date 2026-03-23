@@ -349,3 +349,28 @@
     margin-bottom: 1.5rem;
   }
 }
+
+@media (max-width: 360px) {
+  .study-plans-page h1 {
+    font-size: 1.5rem;
+  }
+  .study-plans-page .header-desc {
+    font-size: 0.88rem;
+  }
+  .plan-card {
+    padding: 1rem;
+  }
+  .plan-title {
+    font-size: 1.1rem;
+  }
+  .modal-hero {
+    padding: 1.25rem 1rem 1rem;
+  }
+  .modal-details {
+    padding: 1.25rem 1rem;
+  }
+  .plan-meta {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

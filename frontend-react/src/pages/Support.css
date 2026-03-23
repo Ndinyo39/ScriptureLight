@@ -275,3 +275,42 @@
     }
 }
 
+@media (max-width: 360px) {
+    .support-hero {
+        padding: 4rem 0 3rem;
+    }
+    .support-title {
+        font-size: clamp(1.75rem, 8vw, 2.5rem);
+    }
+    .support-subtitle {
+        font-size: 0.9rem;
+    }
+    .donation-card {
+        padding: 1rem 0.75rem;
+        border-radius: var(--radius-sm);
+    }
+    .amount-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    .amount-btn {
+        padding: 0.75rem 0.4rem;
+        font-size: 1.1rem;
+    }
+    .type-btn {
+        font-size: 0.88rem;
+        padding: 0.5rem 0.75rem;
+    }
+    .custom-amount-input {
+        font-size: 1rem;
+        padding: 1rem 1rem 1rem 2.5rem;
+    }
+    .currency-symbol {
+        font-size: 1rem;
+        left: 1rem;
+    }
+    .impact-section {
+        padding: 3rem 0;
+    }
+}
+

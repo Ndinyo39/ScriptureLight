@@ -334,16 +334,31 @@
 @media (max-width: 480px) {
   .testimony-hero { padding: 2.5rem 1.25rem; border-radius: 16px; }
   .testimony-hero h2 { font-size: 1.6rem; }
-  .testimony-hero p { font-size: 0.95rem; }
-  .share-btn-large { padding: 0.85rem 1.5rem; font-size: 0.9rem; }
+  .testimony-hero p { font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .share-btn-large { padding: 0.85rem 1.5rem; font-size: 0.9rem; width: 100%; justify-content: center; }
   .testimony-card { padding: 1.5rem 1.25rem; }
   .testimony-content::before { left: 0; font-size: 3rem; top: -0.75rem; }
   .testimony-content { padding-left: 0.5rem; }
-  .testimony-title { font-size: 1.2rem; }
+  .testimony-title { font-size: 1.2rem; padding-right: 3rem; /* prevent badge overlap */ }
   .amen-section { flex-wrap: wrap; gap: 0.75rem; }
-  .amen-btn-big { flex: 1; justify-content: center; min-width: 130px; }
+  .amen-btn-big { flex: 1; justify-content: center; min-width: 110px; }
   .comment-input-box { flex-direction: column; }
   .comment-input-box input { border-radius: 10px; }
   .comment-input-box .btn-primary { width: 100%; justify-content: center; border-radius: 10px; }
-  .toast-notification { left: 1rem; right: 1rem; transform: none; text-align: center; white-space: normal; }
+  .toast-notification { left: 1rem; right: 1rem; transform: none; text-align: center; white-space: normal; bottom: 1.25rem; }
+  .testimonies-page { padding-bottom: 3rem; }
+}
+
+@media (max-width: 360px) {
+  .testimony-hero { padding: 2rem 1rem; }
+  .testimony-hero h2 { font-size: 1.35rem; }
+  .testimony-hero p { font-size: 0.9rem; }
+  .testimony-card { padding: 1.25rem 1rem; }
+  .testimony-content { font-size: 0.95rem; }
+  .testimony-content::before { display: none; }
+  .testimony-title { font-size: 1.1rem; }
+  .testimony-badge { top: 1rem; right: 1rem; font-size: 0.65rem; padding: 3px 8px; }
+  .amen-btn-big { padding: 0.6rem 1rem; font-size: 0.85rem; }
+  .testimony-modal-body { padding: 1.5rem 1rem; }
+  .submission-notice { flex-direction: column; gap: 0.5rem; padding: 1rem; }
 }

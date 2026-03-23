@@ -111,6 +111,36 @@
     }
 }
 
+@media (max-width: 360px) {
+    .books-grid {
+        gap: 1rem;
+    }
+    .book-info {
+        padding: 1.1rem;
+    }
+    .book-info h3 {
+        font-size: 1rem;
+    }
+    .book-info .author {
+        font-size: 0.82rem;
+    }
+    .book-info .description {
+        font-size: 0.82rem;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+    .book-actions {
+        grid-template-columns: 1fr 44px;
+    }
+    .search-bar input {
+        font-size: 0.9rem;
+    }
+    .category-btn {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.8rem;
+    }
+}
+
 
 .library-sidebar {
     background: white;

@@ -222,8 +222,43 @@
 
 /* ── RESPONSIVE ───────────────────────────── */
 @media (max-width: 480px) {
+    .auth-page {
+        padding: 1.5rem 1rem;
+        align-items: flex-start;
+        padding-top: 3rem;
+    }
     .auth-card {
-        padding: 2.5rem 1.75rem;
+        padding: 2rem 1.5rem;
+    }
+    .auth-icon {
+        width: 68px;
+        height: 68px;
+    }
+    .auth-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .auth-page {
+        padding: 2rem 0.75rem;
+    }
+    .auth-card {
+        padding: 1.5rem 1rem;
+    }
+    .auth-icon {
+        width: 56px;
+        height: 56px;
+    }
+    .auth-header h2 {
+        font-size: 1.3rem;
+    }
+    .auth-pending-banner {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .pending-steps {
+        padding: 1rem;
     }
 }
 

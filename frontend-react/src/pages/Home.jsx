@@ -17,10 +17,20 @@ import { useAuth } from '../context/AuthContext';
 import { api } from '../api';
 import './Home.css';
 
-const verseOfTheDay = {
-  text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",
-  ref: "Jeremiah 29:11 (NIV)"
-};
+const inspirationalVerses = [
+  { text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.", ref: "Jeremiah 29:11 (NIV)" },
+  { text: "I can do all this through him who gives me strength.", ref: "Philippians 4:13 (NIV)" },
+  { text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.", ref: "Proverbs 3:5-6 (NIV)" },
+  { text: "But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control.", ref: "Galatians 5:22-23 (NIV)" },
+  { text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", ref: "Joshua 1:9 (NIV)" },
+  { text: "The Lord is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters.", ref: "Psalm 23:1-2 (NIV)" },
+  { text: "Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!", ref: "2 Corinthians 5:17 (NIV)" },
+  { text: "Cast all your anxiety on him because he cares for you.", ref: "1 Peter 5:7 (NIV)" },
+  { text: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.", ref: "Romans 8:28 (NIV)" },
+  { text: "Let all that you do be done in love.", ref: "1 Corinthians 16:14 (ESV)" },
+  { text: "The steadfast love of the Lord never ceases; his mercies never come to an end; they are new every morning; great is your faithfulness.", ref: "Lamentations 3:22-23 (ESV)" },
+  { text: "For God gave us a spirit not of fear but of power and love and self-control.", ref: "2 Timothy 1:7 (ESV)" }
+];
 
 
 
@@ -76,12 +86,34 @@ const testimonialSnippets = [
 const Home = () => {
   const { isLoggedIn, user } = useAuth();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [currentVerse, setCurrentVerse] = useState(inspirationalVerses[0]);
   const [realStats, setRealStats] = useState({
     users: 0,
     testimonies: 0,
     prayers: 0,
     groups: 0
   });
+
+  useEffect(() => {
+    // Function to calculate which verse should be shown based on current hour
+    const updateVerse = () => {
+      // Use the current hour (since epoch) to determine the verse index.
+      // This ensures all users see the same verse during the same hour, 
+      // and it persists across page reloads within that hour.
+      const currentHour = Math.floor(Date.now() / (1000 * 60 * 60));
+      const verseIndex = currentHour % inspirationalVerses.length;
+      setCurrentVerse(inspirationalVerses[verseIndex]);
+    };
+
+    // Set initial verse
+    updateVerse();
+
+    // Check every minute if the hour has changed to update the verse
+    // (We use 1 minute instead of 1 hour interval so it updates exactly when the clock rolls over to the next hour)
+    const interval = setInterval(updateVerse, 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -182,8 +214,15 @@ const Home = () => {
             className="verse-card"
           >
             <Quote size={32} className="verse-quote-icon" />
-            <p className="verse-text">{verseOfTheDay.text}</p>
-            <p className="verse-reference">— {verseOfTheDay.ref}</p>
+            <motion.div
+              key={currentVerse.ref} // This forces a re-render animation when the verse changes
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <p className="verse-text">{currentVerse.text}</p>
+              <p className="verse-reference">— {currentVerse.ref}</p>
+            </motion.div>
             <Link to="/bible" className="verse-cta">
               Read Today's Chapter <ChevronRight size={18} />
             </Link>

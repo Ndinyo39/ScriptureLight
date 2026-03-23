@@ -1328,6 +1328,37 @@
   .comments-section { margin: 0 1rem; }
 }
 
+@media (max-width: 360px) {
+  .community-page {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-bottom: 6rem;
+  }
+  .community-header h1 { font-size: 1.4rem; }
+  .community-header-icon { font-size: 1.75rem; }
+  .community-stats-bar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .stat-pill {
+    width: 100%;
+    min-width: unset;
+    justify-content: flex-start;
+  }
+  .post-form-card { padding: 1rem; }
+  .post-header { padding: 0 0.85rem; }
+  .post-content { padding: 0 0.85rem; font-size: 0.95rem; }
+  .post-scripture-tag { margin: 0 0.85rem 1rem; font-size: 0.8rem; }
+  .reaction-bar { padding: 0.5rem 0.85rem; gap: 0.25rem; }
+  .reaction-btn { padding: 0.3rem 0.45rem; font-size: 0.78rem; }
+  .post-footer-actions { padding-left: 0.85rem; gap: 0.5rem; }
+  .comments-section { margin: 0 0.85rem; }
+  .tab-btn { font-size: 0.8rem; padding: 0.4rem 0.6rem 0.7rem; }
+  .modal-content { border-radius: 16px; }
+  .modal-details { padding: 1.25rem; }
+  .community-tabs { gap: 0; }
+}
+
 .pinned-verse-gold {
   background: linear-gradient(135deg, #fffcf0 0%, #fff 100%);
   border-left: 4px solid var(--gold);

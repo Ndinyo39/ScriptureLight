@@ -104,3 +104,40 @@
         font-size: 0.8rem;
     }
 }
+
+@media (max-width: 480px) {
+    .pwa-banner {
+        padding: 0.5rem 0;
+    }
+    .pwa-icon-box {
+        width: 34px;
+        height: 34px;
+    }
+    .pwa-text strong {
+        font-size: 0.85rem;
+    }
+    .btn-install {
+        padding: 0.35rem 0.85rem;
+        font-size: 0.78rem;
+        gap: 5px;
+    }
+    .btn-close-banner {
+        padding: 0.3rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .pwa-content {
+        gap: 0.6rem;
+    }
+    .pwa-icon-box {
+        display: none; /* save space on very small screens */
+    }
+    .pwa-text strong {
+        font-size: 0.8rem;
+    }
+    .btn-install {
+        padding: 0.3rem 0.7rem;
+        font-size: 0.75rem;
+    }
+}

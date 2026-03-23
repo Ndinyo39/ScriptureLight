@@ -366,20 +366,18 @@ a {
 @media (max-width: 480px) {
     h1 { font-size: 1.8rem; }
     h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
     
     .container { padding: 0 1rem; }
-    .section { padding: 2.5rem 0; }
+    .section { padding: 2rem 0; }
     
-    .btn-primary, .btn-outline {
-        width: 100%;
-        justify-content: center;
-        padding: 0.8rem 1rem;
-    }
+    .card { padding: 1rem; }
 
     .modal-content {
         width: calc(100% - 1rem);
         border-radius: var(--radius);
         padding: 0;
+        max-height: 95vh;
     }
 
     .modal-hero {
@@ -400,6 +398,25 @@ a {
     .modal-footer .btn-outline {
         width: 100%;
         justify-content: center;
+    }
+
+    /* Prevent filter pills from shrinking below tap target */
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.82rem;
+    }
+}
+
+@media (max-width: 360px) {
+    h1 { font-size: 1.55rem; }
+    h2 { font-size: 1.3rem; }
+    h3 { font-size: 1.1rem; }
+
+    .container { padding: 0 0.75rem; }
+
+    .btn-primary, .btn-outline {
+        font-size: 0.85rem;
+        padding: 0.65rem 1rem;
     }
 }
 

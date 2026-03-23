@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Book, Menu, X, LayoutDashboard, LogOut, User as UserIcon, Settings } from 'lucide-react';
+import {
+  BookOpen, Menu, X, LayoutDashboard, LogOut,
+  Users, Home, BookMarked, Heart, HeadphonesIcon,
+  ShieldCheck, Settings, ChevronRight, User as UserIcon
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../utils/imageUrl';
@@ -11,136 +15,223 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { isLoggedIn, user, logout } = useAuth();
+  const menuRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close menu when route changes
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (isOpen && menuRef.current && !menuRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
+
+  // Lock body scroll when menu open
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
   const handleLogout = () => {
     logout();
     setIsOpen(false);
   };
 
-  // Robust check for admin role (handles case and whitespace)
   const userRole = (user?.role || '').toString().toLowerCase().trim();
   const isAdmin = isLoggedIn && userRole === 'admin';
 
-  // Build nav links fresh on every render so React always picks up role changes
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Study Plans', path: '/study-plans' },
-    { name: 'Read Bible', path: '/bible' },
-    { name: 'Community', path: '/community' },
-    { name: 'Testimonies', path: '/testimonies' },
-    ...(isLoggedIn ? [{ name: 'Support', path: '/support' }] : []),
-    ...(isAdmin ? [{ name: '🛡️ Admin Panel', path: '/admin' }] : []),
+    { name: 'Home',        path: '/',           icon: Home },
+    { name: 'Study Plans', path: '/study-plans', icon: BookMarked },
+    { name: 'Read Bible',  path: '/bible',       icon: BookOpen },
+    { name: 'Community',   path: '/community',   icon: Users },
+    { name: 'Testimonies', path: '/testimonies', icon: Heart },
+    ...(isLoggedIn ? [{ name: 'Support', path: '/support', icon: HeadphonesIcon }] : []),
+    ...(isAdmin ? [{ name: 'Admin Panel', path: '/admin', icon: ShieldCheck }] : []),
   ];
 
+  const avatarInitial = (user?.name || 'U').charAt(0).toUpperCase();
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled shadow' : ''}`}>
+    <nav className={`navbar${scrolled ? ' scrolled' : ''}`} ref={menuRef}>
       <div className="container navbar-container">
-        <Link to="/" className="nav-brand">
-          <img src="/Logo.png" alt="ScriptureLight Logo" style={{ height: '48px', width: 'auto' }} />
+
+        {/* Brand */}
+        <Link to="/" className="nav-brand" onClick={() => setIsOpen(false)}>
+          <img src="/Logo.png" alt="ScriptureLight Logo" style={{ height: '44px', width: 'auto' }} />
           <h1>ScriptureLight</h1>
         </Link>
 
         {/* Desktop Links */}
         <div className="nav-links-desktop">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
-            >
-              {link.name}
-            </Link>
-          ))}
-          
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`nav-link${location.pathname === link.path ? ' active' : ''}`}
+              >
+                <Icon size={15} strokeWidth={2} />
+                {link.name}
+              </Link>
+            );
+          })}
+
           <div className="auth-btns">
             {isLoggedIn ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Link to="/profile" className="nav-user-profile">
                   <div className="user-avatar-sm">
-                    {user?.profilePicture ? (
-                      <img src={getImageUrl(user.profilePicture)} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
-                    ) : (
-                      (user?.name || 'U').charAt(0)
-                    )}
+                    {user?.profilePicture
+                      ? <img src={getImageUrl(user.profilePicture)} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                      : avatarInitial}
                   </div>
                   <span className="user-name">{user?.name}</span>
                 </Link>
-                <button onClick={handleLogout} className="btn-outline btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0.4rem 0.8rem' }}>
-                  <LogOut size={20} /> Logout
+                <button onClick={handleLogout} className="btn-outline btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <LogOut size={16} /> Logout
                 </button>
               </div>
             ) : (
               <>
-                <Link to="/login" className="nav-link" style={{ marginRight: '1rem' }}>Login</Link>
+                <Link to="/login" className="nav-link">Login</Link>
                 <Link to="/register" className="btn-primary">Get Started</Link>
               </>
             )}
           </div>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        {/* Mobile toggle */}
+        <button
+          className="mobile-toggle"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isOpen}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={isOpen ? 'close' : 'open'}
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              style={{ display: 'flex' }}
+            >
+              {isOpen ? <X size={26} /> : <Menu size={26} />}
+            </motion.span>
+          </AnimatePresence>
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Backdrop */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            className="mobile-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
             className="mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
           >
-            {navLinks.map((link) => (
+            {/* User profile card inside menu */}
+            {isLoggedIn && (
               <Link
-                key={link.name}
-                to={link.path}
+                to="/profile"
+                className="mobile-user-card"
                 onClick={() => setIsOpen(false)}
-                className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
               >
-                {link.name}
+                <div className="mobile-user-avatar">
+                  {user?.profilePicture
+                    ? <img src={getImageUrl(user.profilePicture)} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                    : avatarInitial}
+                </div>
+                <div className="mobile-user-details">
+                  <span className="mobile-user-name">{user?.name}</span>
+                  <span className="mobile-user-email">{user?.email}</span>
+                </div>
+                <ChevronRight size={18} className="mobile-user-chevron" />
               </Link>
-            ))}
-            <div className="flex flex-col gap-3 mt-4" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '1rem' }}>
+            )}
+
+            {/* Nav links */}
+            <div className="mobile-nav-links">
+              {navLinks.map((link, i) => {
+                const Icon = link.icon;
+                const isActive = location.pathname === link.path;
+                return (
+                  <motion.div
+                    key={link.name}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04, duration: 0.2 }}
+                  >
+                    <Link
+                      to={link.path}
+                      className={`mobile-nav-link${isActive ? ' active' : ''}${link.name === 'Admin Panel' ? ' admin-link' : ''}`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <span className="mobile-nav-icon">
+                        <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                      </span>
+                      <span className="mobile-nav-label">{link.name}</span>
+                      {isActive && <span className="mobile-nav-active-dot" />}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Bottom actions */}
+            <div className="mobile-menu-footer">
               {isLoggedIn ? (
                 <>
-                  <div className="mobile-user-info" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 0', borderTop: '1px solid #eee' }}>
-                    <div className="user-avatar-sm" style={{ 
-                      width: '40px', height: '40px', borderRadius: '50%', background: 'var(--primary)', color: 'white', 
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', overflow: 'hidden'
-                    }}>
-                      {user?.profilePicture ? (
-                        <img src={getImageUrl(user.profilePicture)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : (
-                        (user?.name || 'U').charAt(0)
-                      )}
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 'bold', color: 'var(--dark)' }}>{user?.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#666' }}>{user?.email}</div>
-                    </div>
-                  </div>
-                  <Link to="/profile" onClick={() => setIsOpen(false)} className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Settings size={18} /> Profile Settings
+                  <Link
+                    to="/dashboard"
+                    className="mobile-action-btn primary"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <LayoutDashboard size={18} /> Dashboard
                   </Link>
-                  <Link to="/dashboard" onClick={() => setIsOpen(false)} className="btn-primary text-center">Dashboard</Link>
-                  <button onClick={handleLogout} className="btn-outline">Logout</button>
+                  <button className="mobile-action-btn outline" onClick={handleLogout}>
+                    <LogOut size={18} /> Logout
+                  </button>
                 </>
               ) : (
                 <>
-                  <Link to="/login" onClick={() => setIsOpen(false)} className="btn-outline text-center">Login</Link>
-                  <Link to="/register" onClick={() => setIsOpen(false)} className="btn-primary text-center">Get Started</Link>
+                  <Link to="/login" className="mobile-action-btn outline" onClick={() => setIsOpen(false)}>
+                    Login
+                  </Link>
+                  <Link to="/register" className="mobile-action-btn primary" onClick={() => setIsOpen(false)}>
+                    Get Started
+                  </Link>
                 </>
               )}
             </div>

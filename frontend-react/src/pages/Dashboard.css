@@ -148,6 +148,30 @@
     }
 }
 
+@media (max-width: 360px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .welcome-banner {
+        padding: 1.25rem 0.85rem;
+    }
+    .welcome-text h1 {
+        font-size: 1.2rem;
+    }
+    .streak-value {
+        font-size: 1.75rem;
+    }
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    .stat-card {
+        padding: 1rem;
+    }
+    .card {
+        padding: 1.25rem;
+    }
+}
+
 .dash-col {
     display: flex;
     flex-direction: column;
