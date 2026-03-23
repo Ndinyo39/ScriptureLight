@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api';
 import { getImageUrl } from '../utils/imageUrl';
+import SEO from '../components/SEO';
 import './Home.css';
 
 const inspirationalVerses = [
@@ -168,6 +169,11 @@ const Home = () => {
 
   return (
     <div className="home-page">
+      <SEO 
+        title="Home" 
+        description="Join ScriptureLight to read the Bible, engage in study plans, and unite with believers globally through testimonies." 
+        keywords="Bible, Scripture, Community, Jesus, God, Devotional"
+      />
       
       {/* ── HERO ── */}
       <section className="hero">

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { api } from '../api';
 import { getImageUrl } from '../utils/imageUrl';
+import SEO from '../components/SEO';
 import './Testimonies.css';
 
 const Toast = ({ message, onDone }) => {
@@ -283,6 +284,11 @@ const Testimonies = () => {
 
   return (
     <div className="testimonies-page container">
+      <SEO 
+        title="Testimonies" 
+        description="Read inspiring stories of how God is working in the lives of believers around the world." 
+        keywords="Testimonies, Miracles, God, Faith, Jesus, Inspiration"
+      />
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

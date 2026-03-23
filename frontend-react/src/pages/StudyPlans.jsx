@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api';
+import SEO from '../components/SEO';
 import './StudyPlans.css';
 
 const Toast = ({ message, onDone }) => {
@@ -145,6 +146,11 @@ const StudyPlans = () => {
 
   return (
     <div className="study-plans-page container">
+      <SEO 
+        title="Study Plans" 
+        description="Grow your faith with structured Bible reading and study plans." 
+        keywords="Bible Study, Devotional, Reading Plans, Christian Growth"
+      />
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

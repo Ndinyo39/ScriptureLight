@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import PWAInstallBanner from './components/PWAInstallBanner';
 import { api } from './api';
@@ -38,10 +39,11 @@ function App() {
     fetchStats();
   }, []);
   return (
-    <Router>
-      <div className="app">
-        <PWAInstallBanner />
-        <Navbar />
+    <HelmetProvider>
+      <Router>
+        <div className="app">
+          <PWAInstallBanner />
+          <Navbar />
         <OnlineNotifier />
         <Suspense fallback={
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
@@ -132,6 +134,7 @@ function App() {
         <Footer stats={stats} />
       </div>
     </Router>
+    </HelmetProvider>
   );
 }
 

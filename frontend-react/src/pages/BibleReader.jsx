@@ -19,6 +19,7 @@ import {
   Copy
 } from 'lucide-react';
 import { api } from '../api';
+import SEO from '../components/SEO';
 import './BibleReader.css';
 
 const Toast = ({ message, onDone }) => {
@@ -312,6 +313,10 @@ const BibleReader = () => {
 
   return (
     <div className="bible-reader-page section container">
+      <SEO 
+        title={`Bible - ${currentBook} ${currentChapter}`} 
+        description={`Read the book of ${currentBook} chapter ${currentChapter} on ScriptureLight.`} 
+      />
       {/* Mobile sidebar overlay */}
       <div
         className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
