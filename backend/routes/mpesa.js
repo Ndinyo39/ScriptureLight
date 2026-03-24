@@ -3,16 +3,26 @@ const router = express.Router();
 const { Transaction } = require('../models');
 
 const genToken = async () => {
-    const key = process.env.MPESA_CONSUMER_KEY;
-    const secret = process.env.MPESA_CONSUMER_SECRET;
-    const authString = Buffer.from(`${key}:${secret}`).toString('base64');
+    try {
+        const key = process.env.MPESA_CONSUMER_KEY;
+        const secret = process.env.MPESA_CONSUMER_SECRET;
+        const authString = Buffer.from(`${key}:${secret}`).toString('base64');
 
-    const res = await fetch('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
-        headers: { 'Authorization': `Basic ${authString}` }
-    });
-    if (!res.ok) throw new Error('Failed to get M-Pesa token');
-    const data = await res.json();
-    return data.access_token;
+        const res = await fetch('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
+            headers: { 'Authorization': `Basic ${authString}` }
+        });
+        if (!res.ok) {
+            const errBody = await res.text().catch(() => 'No error body');
+            throw new Error(`Failed to get M-Pesa token: ${res.status} | ${errBody}`);
+        }
+        const data = await res.json();
+        return data.access_token;
+    } catch (err) {
+        if (err.name === 'TypeError' && err.message === 'fetch failed') {
+            throw new Error(`M-Pesa Token Fetch Failed (Check Connectivity/DNS): ${err.cause?.message || err.message}`);
+        }
+        throw err;
+    }
 };
 
 // Initiate STK Push
@@ -52,8 +62,12 @@ router.post('/stkpush', async (req, res) => {
 
         const token = await genToken();
         
-        // Ensure proper callback URL based on deployment
-        const callbackUrl = process.env.MPESA_CALLBACK_URL || 'https://my-domain.com/api/mpesa/callback';
+        const webhookSecret = process.env.MPESA_WEBHOOK_SECRET || 'default_insecure_secret';
+        let callbackUrl = process.env.MPESA_CALLBACK_URL || 'https://my-domain.com/api/mpesa/callback';
+        
+        if (!callbackUrl.includes('?token=')) {
+            callbackUrl += (callbackUrl.includes('?') ? '&' : '?') + `token=${webhookSecret}`;
+        }
 
         const stkPayload = {
             BusinessShortCode: shortcode,
@@ -69,14 +83,21 @@ router.post('/stkpush', async (req, res) => {
             TransactionDesc: 'Donation to Web Bible'
         };
 
-        const stkRes = await fetch('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(stkPayload)
-        });
+        console.log('Initiating STK Push for:', phone);
+        let stkRes;
+        try {
+            stkRes = await fetch('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(stkPayload)
+            });
+        } catch (fetchErr) {
+            console.error("STK Push fetch failed:", fetchErr);
+            throw new Error(`M-Pesa STK Push Network Error: ${fetchErr.cause?.message || fetchErr.message}`);
+        }
 
         const stkData = await stkRes.json();
         if (stkData.ResponseCode !== '0') {
@@ -96,13 +117,21 @@ router.post('/stkpush', async (req, res) => {
 
         res.json({ message: 'Check your phone to complete payment.', data: stkData });
     } catch (err) {
-        console.error("STK Push error:", err);
-        res.status(500).json({ message: err.message });
+        console.error("STK Push error name:", err.name);
+        console.error("STK Push error message:", err.message);
+        console.error("STK Push error cause:", err.cause?.message, '| code:', err.cause?.code);
+        console.error("STK Push full error:", err);
+        res.status(500).json({ message: err.message, cause: err.cause?.message, code: err.cause?.code });
     }
 });
 
 router.post('/callback', async (req, res) => {
     try {
+        const webhookSecret = process.env.MPESA_WEBHOOK_SECRET || 'default_insecure_secret';
+        if (req.query.token !== webhookSecret) {
+            console.warn('Unauthorized M-Pesa webhook attempt.');
+            return res.status(401).send('Unauthorized');
+        }
         const body = req.body;
         console.log("M-Pesa callback:", JSON.stringify(body, null, 2));
 

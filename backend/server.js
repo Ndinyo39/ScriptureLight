@@ -1,4 +1,10 @@
 require('dotenv').config({ override: true });
+const dns = require('node:dns');
+
+// Force Node.js to prefer IPv4 during DNS lookup (common fix for 'fetch failed' on Windows with Safaricom)
+if (dns.setDefaultResultOrder) {
+    dns.setDefaultResultOrder('ipv4first');
+}
 const express = require('express');
 const cors = require('cors');
 const app = express();

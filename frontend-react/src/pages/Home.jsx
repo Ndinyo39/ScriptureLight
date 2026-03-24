@@ -67,36 +67,13 @@ const features = [
   }
 ];
 
-const testimonialSnippets = [
-  {
-    text: "ScriptureLight transformed my daily devotion. The structured plans keep me focused!",
-    author: "Grace M.", 
-    role: "Member since 2025"
-  },
-  {
-    text: "Sharing my testimony here helped me realize so many others were praying for me.",
-    author: "David K.", 
-    role: "Community Leader"
-  },
-  {
-    text: "I've read more Bible this year than in the past decade combined. God is faithful!",
-    author: "Mary J.", 
-    role: "Faithful Reader"
-  }
-];
-
 const Home = () => {
   const { isLoggedIn, user } = useAuth();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [fetchedTestimonies, setFetchedTestimonies] = useState([]);
   const [currentVerse, setCurrentVerse] = useState(inspirationalVerses[0]);
-  const [realStats, setRealStats] = useState({
-    users: 0,
-    testimonies: 0,
-    prayers: 0,
-    groups: 0
-  });
+  const [realStats, setRealStats] = useState(null);
 
   useEffect(() => {
     // Function to calculate which verse should be shown based on current hour
@@ -126,6 +103,8 @@ const Home = () => {
         setRealStats(data);
       } catch (err) {
         console.error('Failed to fetch home stats:', err);
+        // Fallback to zeros on error so UI doesn't hang
+        setRealStats({ users: 0, testimonies: 0, prayers: 0, groups: 0 });
       }
     };
     const fetchTestimonies = async () => {
@@ -149,23 +128,36 @@ const Home = () => {
         role: t.category || 'Member',
         avatar: t.user?.profilePicture
       }))
-    : testimonialSnippets;
+    : [
+        {
+          text: "Let your light so shine before men, that they may see your good works, and glorify your Father which is in heaven.",
+          author: "Matthew 5:16",
+          role: "Scripture",
+          avatar: null
+        },
+        {
+          text: "Your testimony can spark faith in others. Share your journey with the community today.",
+          author: "ScriptureLight",
+          role: "Join the Conversation",
+          avatar: null
+        }
+      ];
 
   const stats = [
-    { value: (realStats?.users || 0).toLocaleString(), label: "Registered Users" },
-    { value: (realStats?.groups || 0) > 0 ? `${realStats.groups}+` : "0", label: "Fellowship Groups" },
-    { value: (realStats?.testimonies || 0).toLocaleString(), label: "Testimonies Shared" },
-    { value: (realStats?.prayers || 0).toLocaleString(), label: "Prayer Requests" }
+    { value: realStats ? realStats.users.toLocaleString() : "...", label: "Registered Users" },
+    { value: realStats ? (realStats.groups > 0 ? `${realStats.groups}+` : "0") : "...", label: "Fellowship Groups" },
+    { value: realStats ? realStats.testimonies.toLocaleString() : "...", label: "Testimonies Shared" },
+    { value: realStats ? realStats.prayers.toLocaleString() : "...", label: "Prayer Requests" }
   ];
 
   useEffect(() => {
     if (isPaused) return;
-    const len = fetchedTestimonies.length > 0 ? fetchedTestimonies.length : testimonialSnippets.length;
+    const len = displayTestimonials.length;
     const timer = setInterval(() => {
       setActiveTestimonial(prev => (prev + 1) % len);
     }, 4000);
     return () => clearInterval(timer);
-  }, [isPaused, fetchedTestimonies.length]);
+  }, [isPaused, displayTestimonials.length]);
 
   return (
     <div className="home-page">
@@ -213,23 +205,23 @@ const Home = () => {
                 </Link>
               )}
             </div>
-            <p className="hero-footnote">No subscription required · Free forever · Join {(realStats?.users || 0).toLocaleString()}+ believers</p>
+            <p className="hero-footnote">No subscription required · Free forever · Join {realStats ? realStats.users.toLocaleString() : '...'} believers</p>
           </motion.div>
         </div>
 
-        {/* Floating Bible cards visual */}
+        {/* Floating cards visual - Dynamically picked from stats and current verse */}
         <div className="hero-cards-bg" aria-hidden="true">
           <div className="hero-float-card fc1">
             <Star size={16} fill="#e9c46a" color="#e9c46a" />
-            <span>"The Lord is my shepherd" · Ps 23:1</span>
+            <span>Meditation: {currentVerse.ref}</span>
           </div>
           <div className="hero-float-card fc2">
             <Book size={16} color="#4a6fa5" />
-            <span>Foundations of Faith · Day 12 ✓</span>
+            <span>{realStats ? `${realStats.users.toLocaleString()} Believers` : 'Joining the Word...'}</span>
           </div>
           <div className="hero-float-card fc3">
             <Heart size={16} color="#e76f51" />
-            <span>87 Amens on your testimony</span>
+            <span>{realStats ? `${realStats.testimonies.toLocaleString()} Testimonies` : 'Sharing Faith...'}</span>
           </div>
         </div>
       </section>
