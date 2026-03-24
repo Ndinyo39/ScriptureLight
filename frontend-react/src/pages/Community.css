@@ -611,6 +611,18 @@
 .action-btn:hover { background: var(--gray-lightest); color: var(--primary); }
 .action-btn.active { color: var(--primary); }
 .action-btn.active svg { fill: currentColor; transform: scale(1.15); }
+
+.action-btn.view-stat {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.action-btn.view-stat:hover {
+  background: none;
+  color: var(--gray);
+}
+
 .post-footer-actions { display: flex; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-lighter); padding-left: 1.5rem; }
 
 /* ─── COMMENTS ─────────────────────────────────────────── */

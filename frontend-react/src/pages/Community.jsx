@@ -26,7 +26,8 @@ import {
   Pin,
   TrendingUp,
   Star,
-  Sparkles
+  Sparkles,
+  Eye
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
@@ -95,6 +96,23 @@ const REACTION_TYPES = [
   { key: 'fire',   emoji: '🔥', label: 'Inspired', api: false },
   { key: 'peace',  emoji: '🕊️', label: 'Peace',   api: false },
 ];
+
+/* ─── POST VIEW TRACKER ───────────────────────────────── */
+const PostViewTracker = ({ postId }) => {
+  useEffect(() => {
+    const recordView = async () => {
+      try {
+        await api.post(`/community/${postId}/view`);
+      } catch (err) {
+        // Silently fail for views
+      }
+    };
+    // Record view after a short delay to ensure "reading"
+    const timer = setTimeout(recordView, 2000);
+    return () => clearTimeout(timer);
+  }, [postId]);
+  return null;
+};
 
 /* ─── COMMUNITY COMPONENT ─────────────────────────────── */
 const Community = () => {
@@ -597,11 +615,17 @@ const Community = () => {
                           <MessageCircle size={18} />
                           <span>{post.commentCount || 0}</span>
                         </button>
+                        <div className="action-btn view-stat" title="Total Views">
+                          <Eye size={18} />
+                          <span>{post.viewCount || 0}</span>
+                        </div>
                         <button className="action-btn" onClick={() => handleShare(post.id)} title="Copy link">
                           <Share2 size={18} />
                         </button>
                       </div>
                     </div>
+
+                    <PostViewTracker postId={post.id} />
 
                     {/* Comments */}
                     <AnimatePresence>

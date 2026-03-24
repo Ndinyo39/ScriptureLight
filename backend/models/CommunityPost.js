@@ -23,9 +23,35 @@ const CommunityPost = sequelize.define('CommunityPost', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
+    prayedBy: {
+        type: DataTypes.TEXT,
+        defaultValue: '[]',
+        get() {
+            const rawValue = this.getDataValue('prayedBy');
+            return rawValue ? JSON.parse(rawValue) : [];
+        },
+        set(val) {
+            this.setDataValue('prayedBy', JSON.stringify(val));
+        }
+    },
     commentCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+    },
+    viewCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    viewedBy: {
+        type: DataTypes.TEXT,
+        defaultValue: '[]',
+        get() {
+            const rawValue = this.getDataValue('viewedBy');
+            return rawValue ? JSON.parse(rawValue) : [];
+        },
+        set(val) {
+            this.setDataValue('viewedBy', JSON.stringify(val));
+        }
     },
     groupId: {
         type: DataTypes.UUID,
