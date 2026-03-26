@@ -43,16 +43,20 @@ const { uploadProfile, cloudinary } = require('../config/cloudinary');
 // Register user
 router.post('/register', authLimiter, [
     body('name').not().isEmpty().withMessage('Name is required'),
+    body('username')
+        .optional({ checkFalsy: true })
+        .isLength({ min: 3 }).withMessage('Username must be at least 3 characters')
+        .matches(/^[a-z0-9_]+$/).withMessage('Username can only contain lowercase letters, numbers, and underscores'),
     body('email').isEmail().withMessage('Valid email is required'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            return res.status(400).json({ message: errors.array()[0].msg });
         }
 
-        const { name, email, password } = req.body;
+        const { name, username, email, password } = req.body;
 
         // Check if user exists
         let user = await User.findOne({ where: { email } });
@@ -60,9 +64,18 @@ router.post('/register', authLimiter, [
             return res.status(400).json({ message: 'User already exists' });
         }
 
+        // Check if username is taken
+        if (username) {
+            const existingUsername = await User.findOne({ where: { username } });
+            if (existingUsername) {
+                return res.status(400).json({ message: 'Username is already taken. Please choose another.' });
+            }
+        }
+
         // Create user
         user = await User.create({
             name,
+            username: username || null,
             email,
             password
         });

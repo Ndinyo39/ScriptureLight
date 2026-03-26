@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import PWAInstallBanner from './components/PWAInstallBanner';
@@ -44,13 +44,13 @@ function App() {
         <div className="app">
           <PWAInstallBanner />
           <Navbar />
-        <OnlineNotifier />
-        <Suspense fallback={
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-            <div className="animate-spin" style={{ width: 40, height: 40, borderRadius: '50%', border: '4px solid var(--secondary)', borderTopColor: 'transparent' }} />
-          </div>
-        }>
-        <Routes>
+          <OnlineNotifier />
+          <Suspense fallback={
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+              <div className="animate-spin" style={{ width: 40, height: 40, borderRadius: '50%', border: '4px solid var(--secondary)', borderTopColor: 'transparent' }} />
+            </div>
+          }>
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route 
             path="/study-plans" 
