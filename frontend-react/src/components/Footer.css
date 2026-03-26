@@ -112,6 +112,59 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
+/* Download / PWA Install */
+.footer-download h4 {
+  color: white;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.footer-app-desc {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 0.9rem;
+  line-height: 1.4;
+}
+
+.footer-install-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  background: linear-gradient(135deg, #2a9d8f, #1a3052);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.footer-install-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+.pwa-installed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: #2a9d8f;
+  font-weight: 600;
+}
+
+.pwa-unavailable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .main-footer {
