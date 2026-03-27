@@ -32,12 +32,28 @@ const compression = require('compression');
 // === 2. CORS & MIDDLEWARE ===
 app.use(helmet());
 app.use(compression());
+
+// M-2 Fix: Restrict CORS to known frontend origins only.
+// Wildcard (origin: true) allowed any site to make credentialed requests.
+const ALLOWED_ORIGINS = [
+    process.env.FRONTEND_URL || 'http://localhost:5173',
+    'https://scripturelight.vercel.app',
+    'https://www.scripturelight.com',
+    'https://scripturelight.com'
+].filter(Boolean);
+
 app.use(cors({
-    origin: true,
+    origin: (origin, callback) => {
+        // Allow same-origin / non-browser requests (Postman, mobile) and known origins
+        if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error(`CORS policy: origin ${origin} is not allowed`));
+    },
     credentials: true
 }));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ limit: '2mb', extended: true }));
 
 // === 3. LAZY DATABASE CONNECTION ===
 let isConnected = false;

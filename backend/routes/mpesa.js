@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Transaction } = require('../models');
+const auth = require('../middleware/auth');
 
 const genToken = async () => {
     try {
@@ -25,10 +26,11 @@ const genToken = async () => {
     }
 };
 
-// Initiate STK Push
-router.post('/stkpush', async (req, res) => {
+// Initiate STK Push (auth required — prevents anonymous triggering of payments)
+router.post('/stkpush', auth, async (req, res) => {
     try {
-        let { phone, amount, userId } = req.body;
+        let { phone, amount } = req.body;
+        const userId = req.user.id; // Always use the authenticated user's id
         
         // Basic formatting for Safaricom phone numbers e.g 2547XXXXXXXX
         if (phone.startsWith('0')) {
@@ -127,9 +129,13 @@ router.post('/stkpush', async (req, res) => {
 
 router.post('/callback', async (req, res) => {
     try {
-        const webhookSecret = process.env.MPESA_WEBHOOK_SECRET || 'default_insecure_secret';
+        const webhookSecret = process.env.MPESA_WEBHOOK_SECRET;
+        if (!webhookSecret) {
+            console.error('FATAL: MPESA_WEBHOOK_SECRET is not configured. Callback rejected.');
+            return res.status(500).send('Server misconfiguration');
+        }
         if (req.query.token !== webhookSecret) {
-            console.warn('Unauthorized M-Pesa webhook attempt.');
+            console.warn('Unauthorized M-Pesa webhook attempt from IP:', req.ip);
             return res.status(401).send('Unauthorized');
         }
         const body = req.body;

@@ -10,12 +10,12 @@
     background-size: 200% 200%;
     animation: gradientShift 10s ease infinite;
     color: white;
-    padding: 3.5rem 4rem;
+    padding: 2.25rem 3rem;
     border-radius: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 3.5rem;
+    margin-bottom: 2.5rem;
     box-shadow: 0 20px 40px rgba(30, 60, 114, 0.2);
     position: relative;
     overflow: hidden;
@@ -36,10 +36,10 @@
 }
 
 .welcome-text h1 {
-    font-size: 2.5rem;
+    font-size: 2.1rem;
     font-weight: 800;
     letter-spacing: -0.5px;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
     text-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -53,7 +53,7 @@
 .streak-badge {
     text-align: center;
     background: rgba(255, 255, 255, 0.1);
-    padding: 1.5rem 2.5rem;
+    padding: 1rem 2rem;
     border-radius: 20px;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -63,7 +63,7 @@
 }
 
 .streak-value {
-    font-size: 3.5rem;
+    font-size: 2.8rem;
     font-weight: 900;
     line-height: 1;
     background: linear-gradient(to bottom, #ffffff, rgba(255,255,255,0.7));
@@ -96,14 +96,14 @@
 /* Stats Grid */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 2rem;
-    margin-bottom: 4rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
 }
 
 .stat-card {
     background: white;
-    padding: 2.5rem 2rem;
+    padding: 1.5rem 1rem;
     border-radius: 24px;
     text-align: center;
     box-shadow: 0 10px 40px rgba(0,0,0,0.04);
@@ -118,9 +118,9 @@
 }
 
 .stat-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -134,11 +134,11 @@
 }
 
 .stat-value {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 800;
     color: var(--dark, #2d3748);
     line-height: 1.1;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
 .stat-label {
@@ -151,7 +151,7 @@
 .dashboard-grid {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
-    gap: 2.5rem;
+    gap: 1.5rem;
 }
 
 @media (max-width: 992px) {
@@ -169,7 +169,7 @@
 /* Premium Card Design */
 .card {
     background: white;
-    padding: 2.5rem;
+    padding: 1.5rem;
     border-radius: 24px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.04);
     border: 1px solid rgba(0,0,0,0.02);
@@ -179,7 +179,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
 }
 
 .card-header h3 {
@@ -206,7 +206,7 @@
 /* Reading Content */
 .reading-content {
     background: linear-gradient(145deg, #f8f9fa, #ffffff);
-    padding: 2rem;
+    padding: 1.25rem;
     border-radius: 16px;
     display: flex;
     justify-content: space-between;
@@ -315,21 +315,21 @@
 
 .v-text {
     font-family: 'Merriweather', 'Georgia', serif;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     line-height: 1.6;
     text-align: center;
     color: var(--dark, #2d3748);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
     z-index: 2;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
 }
 
 .v-ref {
     text-align: center;
     color: #d4a373;
     font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }

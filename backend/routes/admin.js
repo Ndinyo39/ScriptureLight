@@ -9,6 +9,17 @@ const admin = require('../middleware/admin');
 router.use(auth);
 router.use(admin);
 
+// Allowed values (whitelists)
+const VALID_ROLES    = ['user', 'admin'];
+const VALID_STATUSES = ['pending', 'active', 'suspended'];
+const VALID_CONTENT_STATUSES = ['pending', 'approved', 'rejected'];
+
+// Generic error helper — never leak DB internals to the client
+const serverError = (res, err) => {
+    console.error(err);
+    return res.status(500).json({ message: 'An unexpected error occurred' });
+};
+
 // ── DASHBOARD STATS ────────────────────────
 router.get('/stats', async (req, res) => {
     try {
@@ -85,6 +96,9 @@ router.get('/testimonies', async (req, res) => {
 router.patch('/testimonies/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
+        if (!VALID_CONTENT_STATUSES.includes(status)) {
+            return res.status(400).json({ message: `Invalid status. Allowed: ${VALID_CONTENT_STATUSES.join(', ')}` });
+        }
         const testimony = await Testimony.findByPk(req.params.id);
         if (!testimony) return res.status(404).json({ message: 'Testimony not found' });
         
@@ -92,7 +106,7 @@ router.patch('/testimonies/:id/status', async (req, res) => {
         await testimony.save();
         res.json(testimony);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        serverError(res, err);
     }
 });
 
@@ -128,6 +142,9 @@ router.get('/comments', async (req, res) => {
 router.patch('/comments/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
+        if (!VALID_CONTENT_STATUSES.includes(status)) {
+            return res.status(400).json({ message: `Invalid status. Allowed: ${VALID_CONTENT_STATUSES.join(', ')}` });
+        }
         const comment = await Comment.findByPk(req.params.id);
         if (!comment) return res.status(404).json({ message: 'Comment not found' });
         
@@ -135,7 +152,7 @@ router.patch('/comments/:id/status', async (req, res) => {
         await comment.save();
         res.json(comment);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        serverError(res, err);
     }
 });
 
@@ -166,28 +183,40 @@ router.get('/users', async (req, res) => {
 router.patch('/users/:id/role', async (req, res) => {
     try {
         const { role } = req.body;
+        if (!VALID_ROLES.includes(role)) {
+            return res.status(400).json({ message: `Invalid role. Allowed: ${VALID_ROLES.join(', ')}` });
+        }
+        // Prevent admins from changing their own role (accidental lockout / privilege abuse)
+        if (req.params.id === req.user.id) {
+            return res.status(403).json({ message: 'You cannot change your own role.' });
+        }
         const user = await User.findByPk(req.params.id);
         if (!user) return res.status(404).json({ message: 'User not found' });
         
-        user.role = role;
-        await user.save();
-        res.json(user);
+        const updatedUser = await user.update({ role });
+        res.json({ id: updatedUser.id, name: updatedUser.name, email: updatedUser.email, role: updatedUser.role, status: updatedUser.status });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        serverError(res, err);
     }
 });
 
 router.patch('/users/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
+        if (!VALID_STATUSES.includes(status)) {
+            return res.status(400).json({ message: `Invalid status. Allowed: ${VALID_STATUSES.join(', ')}` });
+        }
+        // Prevent admins from suspending/pending themselves
+        if (req.params.id === req.user.id) {
+            return res.status(403).json({ message: 'You cannot change your own status.' });
+        }
         const user = await User.findByPk(req.params.id);
         if (!user) return res.status(404).json({ message: 'User not found' });
         
-        user.status = status;
-        await user.save();
-        res.json(user);
+        const updatedUser = await user.update({ status });
+        res.json({ id: updatedUser.id, name: updatedUser.name, email: updatedUser.email, role: updatedUser.role, status: updatedUser.status });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        serverError(res, err);
     }
 });
 
@@ -207,6 +236,9 @@ router.get('/books', async (req, res) => {
 router.patch('/books/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
+        if (!VALID_CONTENT_STATUSES.includes(status)) {
+            return res.status(400).json({ message: `Invalid status. Allowed: ${VALID_CONTENT_STATUSES.join(', ')}` });
+        }
         const book = await Book.findByPk(req.params.id);
         if (!book) return res.status(404).json({ message: 'Book not found' });
         
@@ -214,7 +246,7 @@ router.patch('/books/:id/status', async (req, res) => {
         await book.save();
         res.json(book);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        serverError(res, err);
     }
 });
 

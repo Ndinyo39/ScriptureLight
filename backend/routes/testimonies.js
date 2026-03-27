@@ -4,8 +4,13 @@ const auth = require('../middleware/auth');
 const { Testimony, User, Comment } = require('../models');
 const { sequelize } = require('../config/database');
 
-// Get all approved testimonies with commentsCount
-router.get('/', async (req, res) => {
+// H-1: Strip HTML tags to prevent Stored XSS
+const stripHtml = (str) => (typeof str === 'string' ? str.replace(/<[^>]*>/g, '').trim() : str);
+const MAX_TITLE_LENGTH = 200;
+const MAX_CONTENT_LENGTH = 5000;
+
+// Get all approved testimonies with commentsCount (Auth required for privacy)
+router.get('/', auth, async (req, res) => {
     try {
         const testimonies = await Testimony.findAll({
             where: { status: 'approved' },
@@ -34,13 +39,22 @@ router.get('/', async (req, res) => {
 // Create new testimony (requires login)
 router.post('/', auth, async (req, res) => {
     try {
-        const { title, content, category, scripture } = req.body;
+        const title = stripHtml(req.body.title);
+        const content = stripHtml(req.body.content);
+        const { category, scripture } = req.body;
+        const sanitizedScripture = stripHtml(scripture);
+
+        if (!title || title.length === 0) return res.status(400).json({ message: 'Title is required' });
+        if (title.length > MAX_TITLE_LENGTH) return res.status(400).json({ message: `Title too long (max ${MAX_TITLE_LENGTH} chars)` });
+        if (!content || content.length === 0) return res.status(400).json({ message: 'Content is required' });
+        if (content.length > MAX_CONTENT_LENGTH) return res.status(400).json({ message: `Content too long (max ${MAX_CONTENT_LENGTH} chars)` });
+
         const testimony = await Testimony.create({
             userId: req.user.id,
             title,
             content,
-            category,
-            scripture
+            category: category || 'general',
+            scripture: sanitizedScripture
         });
         
         const fullTestimony = await Testimony.findByPk(testimony.id, {

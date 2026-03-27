@@ -11,7 +11,11 @@ const auth = async (req, res, next) => {
         }
 
         // Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+        if (!process.env.JWT_SECRET) {
+            console.error('FATAL: JWT_SECRET environment variable is not set.');
+            return res.status(500).json({ message: 'Server configuration error' });
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
         // Check user status in database
         const user = await User.findByPk(decoded.user.id);

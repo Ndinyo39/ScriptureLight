@@ -4,14 +4,17 @@ const auth = require('../middleware/auth');
 const { CommunityPost, User } = require('../models');
 const rateLimit = require('express-rate-limit');
 
+// H-1: Strip HTML tags to prevent Stored XSS (no extra dependency required)
+const stripHtml = (str) => (typeof str === 'string' ? str.replace(/<[^>]*>/g, '').trim() : str);
+
 const postLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 20, // Limit each IP to 20 posts per window
     message: { message: 'Too many posts created from this IP, please try again after 15 minutes' }
 });
 
-// Get all community posts
-router.get('/', async (req, res) => {
+// Get all community posts (Auth required for privacy)
+router.get('/', auth, async (req, res) => {
     try {
         const posts = await CommunityPost.findAll({
             order: [['createdAt', 'DESC']],
@@ -28,10 +31,21 @@ router.get('/', async (req, res) => {
     }
 });
 
+const ALLOWED_POST_TYPES = ['encouragement', 'prayer', 'question', 'praise', 'study'];
+
 // Create new post (auth required)
 router.post('/', auth, postLimiter, async (req, res) => {
     try {
-        const { content, scripture, type } = req.body;
+        // H-4: Validate content length
+        const content = stripHtml(req.body.content);
+        if (!content || content.length === 0) {
+            return res.status(400).json({ message: 'Post content cannot be empty.' });
+        }
+        if (content.length > 5000) {
+            return res.status(400).json({ message: 'Post content is too long (max 5000 characters).' });
+        }
+        const scripture = stripHtml(req.body.scripture);
+        const type = ALLOWED_POST_TYPES.includes(req.body.type) ? req.body.type : 'encouragement';
         const post = await CommunityPost.create({
             userId: req.user.id,
             content,

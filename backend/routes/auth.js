@@ -109,15 +109,24 @@ router.post('/login', loginLimiter, [
         const { password } = req.body;
 
         // Check if user exists by email or username
+        // Fallback to email-only if the username column is missing in the production DB
         const { Op } = require('sequelize');
-        const user = await User.findOne({
-            where: {
-                [Op.or]: [
-                    { email: identifier },
-                    { username: identifier }
-                ]
-            }
-        });
+        let user;
+        try {
+            user = await User.findOne({
+                where: {
+                    [Op.or]: [
+                        { email: identifier },
+                        { username: identifier }
+                    ]
+                }
+            });
+        } catch (dbQueryErr) {
+            // The username column may not yet exist in the production DB schema.
+            // Fall back to email-only search so login still works.
+            console.warn('[Login] Username OR query failed – falling back to email-only. DB may need a schema sync. Error:', dbQueryErr.message);
+            user = await User.findOne({ where: { email: identifier } });
+        }
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }

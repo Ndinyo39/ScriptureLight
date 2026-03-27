@@ -3,6 +3,10 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const { Comment, User, CommunityPost, Testimony } = require('../models');
 
+// H-1: Strip HTML tags to prevent Stored XSS
+const stripHtml = (str) => (typeof str === 'string' ? str.replace(/<[^>]*>/g, '').trim() : str);
+const MAX_COMMENT_LENGTH = 2000;
+
 // Get comments for a specific post
 router.get('/post/:postId', async (req, res) => {
     try {
@@ -42,7 +46,12 @@ router.get('/testimony/:testimonyId', async (req, res) => {
 // Add a comment to a post
 router.post('/post/:postId', auth, async (req, res) => {
     try {
-        const { content } = req.body;
+        const content = stripHtml(req.body.content);
+        if (!content || content.length === 0)
+            return res.status(400).json({ message: 'Comment cannot be empty.' });
+        if (content.length > MAX_COMMENT_LENGTH)
+            return res.status(400).json({ message: `Comment too long (max ${MAX_COMMENT_LENGTH} chars).` });
+
         const post = await CommunityPost.findByPk(req.params.postId);
         if (!post) return res.status(404).json({ message: 'Post not found' });
 
@@ -69,7 +78,12 @@ router.post('/post/:postId', auth, async (req, res) => {
 // Add a comment to a testimony
 router.post('/testimony/:testimonyId', auth, async (req, res) => {
     try {
-        const { content } = req.body;
+        const content = stripHtml(req.body.content);
+        if (!content || content.length === 0)
+            return res.status(400).json({ message: 'Comment cannot be empty.' });
+        if (content.length > MAX_COMMENT_LENGTH)
+            return res.status(400).json({ message: `Comment too long (max ${MAX_COMMENT_LENGTH} chars).` });
+
         const testimony = await Testimony.findByPk(req.params.testimonyId);
         if (!testimony) return res.status(404).json({ message: 'Testimony not found' });
 
